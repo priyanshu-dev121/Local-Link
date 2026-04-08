@@ -1,0 +1,26 @@
+const mongoose = require('mongoose');
+
+const serviceSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  category: {
+    type: String,
+    enum: [
+      'electrician',
+      'plumber',
+      'delivery',
+      'cleaning',
+      'home tutor',
+      'painter'
+    ],
+    lowercase: true,
+    trim: true,
+    required: true
+  },
+  price: Number,
+  description: String
+}, { timestamps: true });
+
+module.exports = mongoose.model('Service', serviceSchema);
