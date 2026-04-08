@@ -26,13 +26,7 @@ app.use('/api/users', require('./Routes/userRouter'));
  app.use('/api/services', require('./Routes/serviceRouter'));
 app.use('/api/bookings', require('./Routes/bookingRouter'));
 
-// // error handling middleware (optional but good practice)
-// app.use((err, req, res, next) => 
-//   console.error(err.stack);
-//   res.status(500).json({
-//     message: 'Something went wrong',
-//   });
-// });
+
 app.use(errorHandler)
 // server start
 const PORT = process.env.PORT || 5000;
