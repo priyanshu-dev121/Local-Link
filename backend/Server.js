@@ -1,4 +1,5 @@
 // load environment variables
+require('dns').setDefaultResultOrder('ipv4first');
 require('dotenv').config();
 const connectDB = require('./Config/db');
 connectDB();
