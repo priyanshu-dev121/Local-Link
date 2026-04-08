@@ -2,6 +2,7 @@
 require('dotenv').config();
 const connectDB = require('./Config/db');
 connectDB();
+const errorHandler = require('./Middleware/errormiddleware');
 // imports
 const express = require('express');
 const cors = require('cors');
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
 
 
 // routes (connect later when you create them)
-// app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/auth', require('./Routes/authRouter'));
 app.use('/api/users', require('./Routes/userRouter'));
  app.use('/api/services', require('./Routes/serviceRouter'));
 app.use('/api/bookings', require('./Routes/bookingRouter'));
@@ -32,7 +33,7 @@ app.use('/api/bookings', require('./Routes/bookingRouter'));
 //     message: 'Something went wrong',
 //   });
 // });
-
+app.use(errorHandler)
 // server start
 const PORT = process.env.PORT || 5000;
 
