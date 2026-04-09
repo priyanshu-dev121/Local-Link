@@ -9,8 +9,16 @@ export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [activeOTPIndex, setActiveOTPIndex] = useState(0);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [showSpamWarning, setShowSpamWarning] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSpamWarning(true);
+    }, 30000); // 30 seconds
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newOtp = [...otp];
@@ -109,6 +117,24 @@ export default function VerifyOTP() {
                />
             ))}
           </div>
+
+          <AnimatePresence>
+            {showSpamWarning && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }} 
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-3"
+              >
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                   <Mail className="w-4 h-4 text-amber-500" />
+                </div>
+                <p className="text-[11px] font-bold text-amber-500 leading-tight">
+                  Not seeing the code? <br />
+                  <span className="text-slate-400">Please check your <strong className="text-amber-500 underline">Spam Folder</strong>.</span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <style>{`
              .hide-arrows::-webkit-outer-spin-button,
