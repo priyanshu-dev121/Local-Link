@@ -16,7 +16,6 @@ const Login = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
@@ -33,10 +32,9 @@ const Login = () => {
     const res = await API.post(endpoint, {
         name: isSignup ? name : undefined,
         email,
-        phone: isSignup ? phone : undefined,
         password,
         role: isSignup ? role : undefined,
-        deviceToken: !isSignup ? deviceToken : undefined // only send on login
+        deviceToken: !isSignup ? deviceToken : undefined
       });
 
       console.log("Auth response:", res.data);
@@ -144,19 +142,6 @@ const Login = () => {
                   className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                 />
               </div>
-
-              {isSignup && (
-                 <div className="relative group">
-                   <div className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-500 group-focus-within:text-primary transition-colors text-sm">+91</div>
-                   <input
-                     type="tel"
-                     placeholder="Phone Number (for SMS Verification)"
-                     value={phone}
-                     onChange={(e) => setPhone(e.target.value)}
-                     className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 tracking-wider"
-                   />
-                 </div>
-              )}
 
               <div className="relative group">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
