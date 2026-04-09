@@ -1,60 +1,146 @@
 import { Link } from "react-router-dom";
-import { MapPin, Mail, Phone, Globe, MessageCircle, Camera, Briefcase } from "lucide-react";
+import { motion } from "framer-motion";
+import { MapPin, Mail, Phone, Globe, MessageCircle, Video, Briefcase } from "lucide-react";
+
+const footerLinks = {
+  Services: [
+    { label: "Plumbing", href: "/services" },
+    { label: "Electrical", href: "/services" },
+    { label: "Cleaning", href: "/services" },
+    { label: "Tutoring", href: "/services" },
+    { label: "Painting", href: "/services" },
+    { label: "Delivery", href: "/services" },
+  ],
+  Company: [
+    { label: "About Us", href: "#" },
+    { label: "How it Works", href: "/how-it-works" },
+    { label: "Careers", href: "#" },
+    { label: "Blog", href: "#" },
+    { label: "Press", href: "#" },
+  ],
+  Contact: [
+    { label: "rajanbhatt257@gmail.com", href: "mailto:rajanbhatt257@gmail.com", icon: Mail },
+    { label: "+91 9580811395", href: "tel:+919580811395", icon: Phone },
+    { label: "Lucknow, India", href: "#", icon: MapPin },
+  ],
+};
+
+// Custom X (Twitter) SVG icon since lucide-react removed the Twitter icon
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const socials = [
+  { Icon: XIcon,         href: "#", label: "X (Twitter)" },
+  { Icon: MessageCircle, href: "#", label: "Discord" },
+  { Icon: Briefcase,     href: "#", label: "LinkedIn" },
+  { Icon: Video,         href: "#", label: "YouTube" },
+  { Icon: Globe,         href: "#", label: "Website" },
+];
+
+// Hover colour per column – chosen to harmonise with the site's primary (violet) + accent (amber)
+const hoverColors: Record<string, string> = {
+  Services: "hover:text-violet-400",
+  Company:  "hover:text-amber-400",
+  Contact:  "hover:text-cyan-400",
+};
 
 const Footer = () => (
-  <footer className="bg-secondary text-secondary-foreground">
-    <div className="container mx-auto px-4 py-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+  <footer className="relative bg-[#0a0a0a] text-white overflow-hidden">
+
+    {/* ── Giant ghost brand name (Top Brand Mark) ── */}
+    <div className="flex items-center justify-center pointer-events-none select-none overflow-hidden pt-12 pb-8">
+      <span
+        className="font-display font-extrabold uppercase leading-none text-[clamp(5rem,18vw,22rem)] tracking-tighter"
+        style={{
+          WebkitTextStroke: "2px rgba(255,255,255,0.08)",
+          color: "transparent",
+        }}
+      >
+        LocalLink
+      </span>
+    </div>
+
+    <div className="container mx-auto px-6 pt-12 pb-20 relative z-10">
+
+      {/* ── Main grid ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.8fr_1fr_1fr_1.4fr] gap-12 mb-16">
+
+        {/* Brand column */}
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-primary-foreground" />
+          <Link to="/" className="flex items-center gap-3 group mb-5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-amber-500 flex items-center justify-center shadow-lg shadow-violet-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+              <MapPin className="w-5 h-5 text-white" />
             </div>
-            <span className="font-display font-bold text-lg">NeighbourHub</span>
-          </div>
-          <p className="text-sm text-secondary-foreground/70 leading-relaxed">
+            <span className="font-display font-extrabold text-2xl tracking-tight">LocalLink</span>
+          </Link>
+          <p className="text-sm text-white/50 leading-relaxed max-w-xs">
             Connecting you with trusted local service providers in your neighbourhood. Quality services, just around the corner.
           </p>
-          <div className="flex gap-3 mt-5">
-            {[Globe, MessageCircle, Camera, Briefcase].map((Icon, i) => (
-              <a key={i} href="#" className="w-9 h-9 rounded-full bg-secondary-foreground/10 flex items-center justify-center hover:bg-primary transition-colors">
+
+          {/* Social icons */}
+          <div className="flex gap-3 mt-8">
+            {socials.map(({ Icon, href, label }) => (
+              <motion.a
+                key={label}
+                href={href}
+                aria-label={label}
+                whileHover={{ y: -4, scale: 1.15 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-violet-400 hover:border-violet-400/50 hover:bg-violet-400/10 transition-colors duration-300"
+              >
                 <Icon className="w-4 h-4" />
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>
 
-        <div>
-          <h4 className="font-display font-semibold mb-4">Services</h4>
-          <ul className="space-y-2 text-sm text-secondary-foreground/70">
-            {["Plumbing", "Electrical", "Tutoring", "Cleaning", "Mechanics", "Delivery"].map(s => (
-              <li key={s}><Link to="/services" className="hover:text-primary transition-colors">{s}</Link></li>
-            ))}
-          </ul>
-        </div>
+        {/* Link columns */}
+        {(Object.keys(footerLinks) as Array<keyof typeof footerLinks>).map((col) => (
+          <div key={col}>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/30 mb-6">{col}</h4>
+            <ul className="space-y-3">
+              {footerLinks[col].map((item) => (
+                <li key={item.label}>
+                  {"icon" in item && item.icon ? (
+                    <a
+                      href={item.href}
+                      className={`flex items-center gap-2 text-sm text-white/50 transition-colors duration-200 ${hoverColors[col]}`}
+                    >
+                      <item.icon className="w-3.5 h-3.5 shrink-0 opacity-60" />
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      className={`text-sm text-white/50 transition-colors duration-200 ${hoverColors[col]}`}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
 
-        <div>
-          <h4 className="font-display font-semibold mb-4">Company</h4>
-          <ul className="space-y-2 text-sm text-secondary-foreground/70">
-            {["About Us", "How it Works", "Careers", "Blog", "Press"].map(s => (
-              <li key={s}><a href="#" className="hover:text-primary transition-colors">{s}</a></li>
-            ))}
-          </ul>
-        </div>
+      {/* ── Divider ── */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
 
-        <div>
-          <h4 className="font-display font-semibold mb-4">Contact</h4>
-          <ul className="space-y-3 text-sm text-secondary-foreground/70">
-            <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary" /> rajanbhatt257@gmail.com</li>
-            <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> +91 9580811395</li>
-            <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" /> Lucknow, India</li>
-          </ul>
+      {/* ── Bottom bar ── */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/25">
+        <span>© {new Date().getFullYear()} LocalLink. All rights reserved.</span>
+        <span className="hidden sm:block">Built with ❤️ for Kalpathon 2.0</span>
+        <div className="flex gap-5">
+          {["Privacy Policy", "Terms", "Cookies"].map((t) => (
+            <a key={t} href="#" className="hover:text-violet-400 transition-colors duration-200">{t}</a>
+          ))}
         </div>
       </div>
 
-      <div className="mt-12 pt-8 border-t border-secondary-foreground/10 text-center text-sm text-secondary-foreground/50">
-        © {new Date().getFullYear()} NeighbourHub. All rights reserved. Built for Kalpathon 2.0
-      </div>
     </div>
   </footer>
 );

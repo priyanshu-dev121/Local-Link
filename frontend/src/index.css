@@ -4,6 +4,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(232, 78, 27, 0.4)); }
+  50% { filter: drop-shadow(0 0 20px rgba(232, 78, 27, 0.7)); }
+}
+
 @layer base {
   :root {
     --background: 220 20% 97%;
@@ -63,9 +86,13 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    scroll-behavior: smooth;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    @apply font-display tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/70;
+  }
+  a, button {
+    @apply transition-all duration-300 ease-out;
   }
 }
 
@@ -76,14 +103,34 @@
   }
   .bg-hero {
     background: var(--hero-gradient);
+    background-size: 200% 200%;
+    animation: gradient-flow 10s ease infinite;
   }
   .shadow-card {
     box-shadow: var(--card-shadow);
   }
   .shadow-card-hover {
     box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
   }
   .glass {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+    @apply bg-card/70 backdrop-blur-2xl border border-white/20 shadow-xl;
+  }
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  .shimmer-effect {
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
   }
 }

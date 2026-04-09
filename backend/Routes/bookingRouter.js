@@ -3,10 +3,12 @@ const router = express.Router();
 const protect = require('../Middleware/authmiddleware');
 const {
   createBooking,
-  getBookings
+  getBookings,
+  updateBookingStatus
 } = require('../Controllers/bookingcontroller');
 
 router.post('/',protect, createBooking);
 router.get('/',protect,getBookings);
+router.put('/:id/status', protect, updateBookingStatus);
 
 module.exports = router;

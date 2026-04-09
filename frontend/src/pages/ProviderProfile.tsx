@@ -1,9 +1,11 @@
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Star, MapPin, Clock, Shield, Calendar, ArrowLeft } from "lucide-react";
 import Layout from "@/components/Layout";
-import { services } from "@/data/services";
 import { Button } from "@/components/ui/button";
+import API from "@/api/api";
+import { toast } from "sonner";
 
 const reviews = [
   { name: "Arjun M.", rating: 5, text: "Excellent work! Very professional and punctual.", date: "2 days ago" },
@@ -15,7 +17,22 @@ const timeSlots = ["9:00 AM", "10:00 AM", "11:00 AM", "2:00 PM", "3:00 PM", "4:0
 
 const ProviderProfile = () => {
   const { id } = useParams();
-  const service = services.find((s) => s.id === id) || services[0];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [service, setService] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        const res = await API.get(`/services/${id}`);
+        setService(res.data);
+      } catch (error) {
+        toast.error("Error fetching service details");
+      }
+    };
+    if (id) fetchService();
+  }, [id]);
+
+  if (!service) return <Layout><div className="p-10 text-center">Loading...</div></Layout>;
 
   return (
     <Layout>
@@ -29,25 +46,23 @@ const ProviderProfile = () => {
             {/* Provider Info */}
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-2">
               <div className="rounded-2xl overflow-hidden bg-card shadow-card">
-                <img src={service.image} alt={service.name} className="w-full h-64 object-cover" />
+                <img src={service.image || "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80"} alt={service.title} className="w-full h-64 object-cover filter brightness-90" />
                 <div className="p-8">
-                  <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">{service.category}</span>
-                  <h1 className="mt-3 text-2xl md:text-3xl font-display font-bold text-card-foreground">{service.name}</h1>
-                  <p className="mt-2 text-lg text-muted-foreground">by {service.provider}</p>
+                  <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider">{service.category}</span>
+                  <h1 className="mt-3 text-2xl md:text-3xl font-display font-bold text-card-foreground">{service.title}</h1>
+                  <p className="mt-2 text-lg text-muted-foreground">Expert Provider</p>
 
                   <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1"><Star className="w-4 h-4 fill-warning text-warning" /> {service.rating} ({service.reviews} reviews)</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {service.location}</span>
-                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {service.duration}</span>
+                    <span className="flex items-center gap-1"><Star className="w-4 h-4 fill-warning text-warning" /> 4.9 (120 reviews)</span>
+                    <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> Local Area</span>
+                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 1-2 hours</span>
                     <span className="flex items-center gap-1"><Shield className="w-4 h-4 text-success" /> Verified</span>
                   </div>
 
                   <div className="mt-6">
                     <h3 className="font-display font-semibold text-card-foreground">About this Service</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                      Professional {service.category.toLowerCase()} service provided by experienced and verified professionals. 
-                      We ensure quality work with a satisfaction guarantee. All materials and tools are included in the service price.
-                      Available for both residential and commercial properties in {service.location} and nearby areas.
+                      {service.description || `Professional ${service.category} service provided by experienced and verified professionals. We ensure quality work with a satisfaction guarantee.`}
                     </p>
                   </div>
 
@@ -107,7 +122,7 @@ const ProviderProfile = () => {
                   </div>
                 </div>
 
-                <Link to="/booking">
+                <Link to={`/booking/${service._id}`}>
                   <Button className="w-full" size="lg">Book Now</Button>
                 </Link>
 

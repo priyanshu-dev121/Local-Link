@@ -6,6 +6,12 @@ const serviceSchema = new mongoose.Schema({
     required: true
   },
 
+  provider: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+
   category: {
     type: String,
     enum: [

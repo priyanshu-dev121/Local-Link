@@ -4,6 +4,8 @@ import { Mail, Lock, User, ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
+import { toast } from "sonner";
+import API from "@/api/api";
 
 const Login = () => {
 
@@ -19,191 +21,157 @@ const Login = () => {
   const handleSubmit = async () => {
 
     if (!email || !password || (isSignup && !name)) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
-    const url = isSignup
-      ? "http://localhost:5000/api/auth/signup"
-      : "http://localhost:5000/api/auth/login";
+    const endpoint = isSignup ? "/auth/signup" : "/auth/login";
 
     try {
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role
-        })
+      const res = await API.post(endpoint, {
+        name: isSignup ? name : undefined,
+        email,
+        password,
+        role: isSignup ? role : undefined
       });
 
-      const data = await res.json();
-
-      console.log("Auth response:", data);
-
-      if (!res.ok) {
-        alert(data.message || "Something went wrong");
-        return;
-      }
+      console.log("Auth response:", res.data);
 
       if (isSignup) {
-
-        alert("Signup successful. Please login.");
-
+        toast.success("Signup successful. Please login.");
         setIsSignup(false);
         setName("");
         setEmail("");
         setPassword("");
-
       } else {
-
-        alert("Login successful");
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        navigate("/dashboard");
-
+        toast.success("Login successful");
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        
+        if (res.data.user.role === "provider") {
+          navigate("/provider-dashboard");
+        } else {
+          navigate("/dashboard");
+        }
       }
 
-    } catch (error) {
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log(error);
-      alert("Server error");
-
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || "Server error";
+      toast.error(errorMessage);
     }
   };
 
   return (
     <Layout>
+      <section className="py-20 min-h-screen flex items-center bg-slate-950 relative overflow-hidden">
+        {/* Animated Background blobs */}
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] animate-blob -z-0 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px] animate-blob animation-delay-4000 -z-0 pointer-events-none" />
 
-      <section className="py-16 min-h-[80vh] flex items-center">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-md mx-auto bg-card rounded-2xl shadow-card p-8"
+            className="max-w-md mx-auto bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-3xl p-10 lg:p-12 border border-white/10"
           >
 
-            <div className="text-center mb-6">
+            <div className="text-center mb-10">
 
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-6 h-6 text-primary-foreground" />
+              <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-primary/40">
+                <MapPin className="w-8 h-8 text-white" />
               </div>
 
-              <h1 className="text-2xl font-display font-bold text-card-foreground">
-                {isSignup ? "Create Account" : "Welcome Back"}
+              <h1 className="text-4xl font-display font-black text-white tracking-tighter">
+                {isSignup ? "Join Us" : "Welcome Back"}
               </h1>
 
-              <p className="text-sm text-muted-foreground mt-1">
-                {isSignup ? "Join NeighbourHub today" : "Sign in to your account"}
+              <p className="text-slate-400 font-medium mt-2">
+                {isSignup ? "Step into the local excellence." : "Resume your local link journey."}
               </p>
 
             </div>
 
             {isSignup && (
-
-              <div className="flex rounded-xl bg-muted p-1 mb-6">
-
+              <div className="flex rounded-2xl bg-white/5 p-1.5 mb-8 border border-white/5">
                 {(["customer", "provider"] as const).map((r) => (
                   <button
                     key={r}
                     onClick={() => setRole(r)}
-                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all duration-300 ${
                       role === r
-                        ? "bg-card text-card-foreground shadow-sm"
-                        : "text-muted-foreground"
+                        ? "bg-primary text-white shadow-xl"
+                        : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    {r === "customer" ? "Customer" : "Service Provider"}
+                    {r === "customer" ? "Customer" : "Expert"}
                   </button>
                 ))}
-
               </div>
-
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-6">
 
               {isSignup && (
-
-                <div className="relative">
-
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-
+                <div className="relative group">
+                  <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
                   <input
-                    placeholder="Full Name"
+                    placeholder="Your Full Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
+                    className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                   />
-
                 </div>
-
               )}
 
-              <div className="relative">
-
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-
+              <div className="relative group">
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                 />
-
               </div>
 
-              <div className="relative">
-
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-
+              <div className="relative group">
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder="Secret Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                 />
-
               </div>
 
-              <Button
+              <button
                 onClick={handleSubmit}
-                className="w-full"
-                size="lg"
+                className="w-full bg-primary text-white font-black py-5 rounded-2xl shadow-3xl shadow-primary/30 hover:scale-[1.05] active:scale-95 transition-all text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3"
               >
-                {isSignup ? "Create Account" : "Sign In"}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+                {isSignup ? "Create Free Account" : "Access Account"}
+                <ArrowRight className="w-5 h-5" />
+              </button>
 
             </div>
 
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              {isSignup ? "Already have an account?" : "Don't have an account?"}
-
+            <p className="text-center text-xs font-bold text-slate-500 mt-10 uppercase tracking-widest">
+              {isSignup ? "Already one of us?" : "New to locallink?"}
               <button
                 onClick={() => setIsSignup(!isSignup)}
-                className="text-primary font-medium hover:underline ml-1"
+                className="text-primary hover:text-white transition-colors ml-2 underline decoration-primary/30"
               >
-                {isSignup ? "Sign in" : "Sign up"}
+                {isSignup ? "Sign In" : "Register Now"}
               </button>
-
             </p>
 
           </motion.div>
 
         </div>
       </section>
-
     </Layout>
   );
 };

@@ -11,6 +11,7 @@ import Booking from "./pages/Booking";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import HowItWorks from "./pages/HowItWorks";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +25,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
           <Route path="/provider/:id" element={<ProviderProfile />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/booking/:serviceId" element={<Booking />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
