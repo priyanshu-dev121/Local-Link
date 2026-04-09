@@ -82,7 +82,7 @@ const ProviderDashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-3xl p-8 border border-white/10 group hover:-translate-y-2 transition-all duration-500"
+                className="bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-3xl p-6 sm:p-8 border border-white/10 group hover:-translate-y-2 transition-all duration-500"
               >
                 <div className="flex items-center justify-between mb-6">
                   <div className={`w-14 h-14 rounded-2xl ${stat.bg} flex items-center justify-center ${stat.color} shadow-xl group-hover:scale-110 transition-transform`}>

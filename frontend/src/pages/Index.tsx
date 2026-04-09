@@ -60,7 +60,7 @@ const Index = () => {
             >
               🏠 Your Neighbourhood, Your Services
             </motion.span>
-            <h1 className="text-5xl md:text-8xl font-display font-black text-white leading-[0.95] tracking-tighter">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-display font-black text-white leading-[0.95] tracking-tighter">
               Discover <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent animate-pulse-glow">Local Excellence</span>
             </h1>
@@ -83,27 +83,27 @@ const Index = () => {
                   className="w-full pl-14 pr-4 py-5 rounded-2xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                 />
               </div>
-              <div className="flex gap-2">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row gap-2 w-full">
+                <div className="relative flex-1">
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     value={locationQuery}
                     onChange={(e) => setLocationQuery(e.target.value)}
                     placeholder="Location"
-                    className="w-40 pl-10 pr-3 py-5 rounded-2xl bg-white/5 text-white placeholder:text-slate-500 border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                    className="w-full pl-10 pr-3 py-5 rounded-2xl bg-white/5 text-white placeholder:text-slate-500 border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                   />
                 </div>
                 <Button 
                   onClick={handleSearch} 
                   size="lg" 
-                  className="h-full px-10 rounded-2xl bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/40 hover:shadow-primary/60"
+                  className="h-full px-8 rounded-2xl bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/40 hover:shadow-primary/60"
                 >
                   Search
                 </Button>
               </div>
             </motion.div>
 
-            <div className="mt-12 flex items-center gap-8">
+            <div className="mt-12 flex flex-wrap items-center gap-4 sm:gap-8">
               {[
                 { label: "10K+ Providers", icon: Users },
                 { label: "4.8 Avg Rating", icon: Star },
@@ -319,15 +319,15 @@ const Index = () => {
                     Every service booked through our platform is covered by our ₹10,000 protection plan. We stand by the quality of our professionals, ensuring your home is always in safe hands.
                   </p>
                </div>
-               <button 
-                  onClick={() => {
-                    const el = document.getElementById('how-it-works');
-                    el?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="px-12 py-6 rounded-2xl bg-primary text-white font-black hover:bg-white hover:text-primary transition-all transform hover:-translate-y-2 hover:shadow-3xl active:scale-95 text-lg"
-               >
-                  Learn More
-               </button>
+                <button 
+                   onClick={() => {
+                     const el = document.getElementById('how-it-works');
+                     el?.scrollIntoView({ behavior: 'smooth' });
+                   }}
+                   className="w-full sm:w-auto px-8 py-5 rounded-2xl bg-primary text-white font-black hover:bg-white hover:text-primary transition-all transform hover:-translate-y-2 hover:shadow-3xl active:scale-95 text-base shrink-0"
+                >
+                   Learn More
+                </button>
             </div>
           </motion.div>
         </div>

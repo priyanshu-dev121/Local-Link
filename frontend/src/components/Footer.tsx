@@ -131,10 +131,10 @@ const Footer = () => (
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
 
       {/* ── Bottom bar ── */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/25">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/25 text-center">
         <span>© {new Date().getFullYear()} LocalLink. All rights reserved.</span>
         <span className="hidden sm:block">Built with ❤️ for Kalpathon 2.0</span>
-        <div className="flex gap-5">
+        <div className="flex flex-wrap justify-center gap-4">
           {[
             { label: "Privacy Policy", path: "/terms" },
             { label: "Terms & Conditions", path: "/terms" },

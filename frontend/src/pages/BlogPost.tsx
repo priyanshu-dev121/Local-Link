@@ -67,7 +67,7 @@ export default function BlogPost() {
                <span className="flex items-center gap-1.5 text-muted-foreground"><User className="w-4 h-4" /> {post.author}</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold mb-10 font-display text-foreground leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 font-display text-foreground leading-tight">
               {post.title}
             </h1>
             

@@ -107,7 +107,7 @@ const Services = () => {
             </div>
 
             {/* Sexy Category filters */}
-            <div className="mt-10 flex flex-wrap justify-center gap-3">
+            <div className="mt-10 flex overflow-x-auto lg:flex-wrap lg:justify-center gap-3 pb-4 lg:pb-0 thin-scrollbar no-scrollbar-mobile">
               {categories.map((cat) => (
                 <button
                   key={cat}

@@ -116,10 +116,10 @@ const Booking = () => {
               <h1 className="text-4xl md:text-5xl font-display font-black text-white tracking-tighter">Confirm <span className="text-primary italic">Booking</span></h1>
               <p className="mt-3 text-slate-400 font-medium">Review your details before we finalize your local excellence.</p>
 
-              <div className="mt-12 bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-3xl p-10 lg:p-12 space-y-10 border border-white/10 relative overflow-hidden">
+              <div className="mt-12 bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-3xl p-6 sm:p-10 lg:p-12 space-y-10 border border-white/10 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
                 
-                <div className="flex justify-between items-center p-8 rounded-[2rem] bg-white/5 border border-white/5">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 sm:p-8 rounded-[2rem] bg-white/5 border border-white/5 gap-4">
                   <div>
                     <h3 className="font-black text-2xl text-white tracking-tight leading-none">{service?.title}</h3>
                     <p className="text-xs font-black text-primary uppercase tracking-[0.2em] mt-3">Category: {service?.category}</p>

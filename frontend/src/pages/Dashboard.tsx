@@ -157,8 +157,8 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-3xl border border-white/10 p-10 min-h-[600px] relative overflow-hidden">
-                <h2 className="text-3xl font-black mb-10 text-white tracking-tighter">{activeTab}</h2>
+              <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-3xl border border-white/10 p-6 sm:p-10 min-h-[600px] relative overflow-hidden">
+                <h2 className="text-2xl sm:text-3xl font-black mb-10 text-white tracking-tighter">{activeTab}</h2>
                 {activeTab === "My Bookings" && (
                   <div className="space-y-6">
                     {bookings.length === 0 ? (
