@@ -26,7 +26,7 @@ const Services = () => {
 
     const fetchServices = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/services");
+        const res = await fetch("https://neighbourhood-service-marketplace.onrender.com/api/services")
         const data = await res.json();
         setServices(data);
         console.log("Backend services:", data);
