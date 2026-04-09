@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, ArrowLeft, Mail } from 'lucide-react';
 import { toast } from 'sonner';
