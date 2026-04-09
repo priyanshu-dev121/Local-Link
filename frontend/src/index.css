@@ -134,3 +134,23 @@
     animation: pulse-glow 3s ease-in-out infinite;
   }
 }
+
+/* Leaflet Custom Overrides */
+.leaflet-container {
+  background: transparent !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
+.custom-leaflet-tooltip {
+  background: hsl(222 47% 11% / 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  color: white !important;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  padding: 8px;
+}
+.custom-leaflet-tooltip::before {
+  border-top-color: hsl(222 47% 11% / 0.95) !important;
+}
+

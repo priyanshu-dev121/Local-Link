@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, Calendar, Clock, MapPin, CreditCard, ShieldCheck, ArrowLeft } from "lucide-react";
+import { CheckCircle, Calendar, Clock, MapPin, QrCode, ArrowLeft, ShieldCheck } from "lucide-react";
+import { QRCodeSVG } from 'qrcode.react';
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -47,8 +48,8 @@ const Booking = () => {
   const handlePaymentAndBooking = async () => {
     setIsProcessing(true);
     
-    // Simulate real payment delay
-    await new Promise(r => setTimeout(r, 1500));
+    // Simulate systematic 3-second bank verification network delay
+    await new Promise(r => setTimeout(r, 4000));
 
     try {
       await API.post("/bookings", {
@@ -170,53 +171,85 @@ const Booking = () => {
                   </div>
                 </div>
 
-                {!paymentStep ? (
-                  <button className="w-full bg-primary text-white font-black py-6 rounded-2xl shadow-3xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase tracking-[0.3em]" onClick={handleProceedToPayment}>
-                    Secure Checkout
-                  </button>
-                ) : (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="pt-10 border-t border-white/10 space-y-8"
-                  >
-                    <div className="flex items-center gap-4">
-                      <button onClick={() => setPaymentStep(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><ArrowLeft className="w-5 h-5" /></button>
-                      <h3 className="text-xl font-black text-white flex items-center gap-3 tracking-tighter">Enter Payment Card</h3>
-                    </div>
-                    
-                    <div className="relative p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden shadow-3xl border border-white/10 group">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-32 -mt-32 blur-[100px] pointer-events-none" />
-                      <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/20 rounded-full -ml-24 -mb-24 blur-[80px] pointer-events-none" />
-                      <ShieldCheck className="w-10 h-10 text-emerald-500/50 absolute top-8 right-8" />
+                {(() => {
+                  const finalTotal = (service?.price || 0) + 29;
+                  const upiString = `upi://pay?pa=pprai1009@okhdfcbank&pn=LocalLink&am=${finalTotal}&cu=INR`;
+                  
+                  return !paymentStep ? (
+                    <button className="w-full bg-primary text-white font-black py-6 rounded-2xl shadow-3xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase tracking-[0.3em]" onClick={handleProceedToPayment}>
+                      Pay via UPI (0% Fee)
+                    </button>
+                  ) : (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="pt-10 border-t border-white/10 space-y-8"
+                    >
+                      {!isProcessing && (
+                        <div className="flex items-center gap-4">
+                          <button onClick={() => setPaymentStep(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><ArrowLeft className="w-5 h-5" /></button>
+                          <h3 className="text-xl font-black text-white flex items-center gap-3 tracking-tighter">Scan to Pay (Direct)</h3>
+                        </div>
+                      )}
                       
-                      <div className="space-y-8 relative z-10">
-                        <div>
-                          <label className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] block mb-3">Card Number</label>
-                          <input type="text" placeholder="XXXX XXXX XXXX XXXX" className="w-full bg-black/30 border border-white/10 rounded-2xl px-6 py-5 text-xl focus:outline-none focus:border-primary/50 font-mono tracking-widest text-center" />
-                        </div>
-                        <div className="flex gap-6">
-                           <div className="flex-1">
-                            <label className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] block mb-3">Expiry</label>
-                            <input type="text" placeholder="MM/YY" className="w-full bg-black/30 border border-white/10 rounded-2xl px-6 py-5 text-lg focus:outline-none focus:border-primary/50 font-mono text-center" />
-                           </div>
-                           <div className="flex-1">
-                            <label className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] block mb-3">CVV</label>
-                            <input type="password" placeholder="XXX" className="w-full bg-black/30 border border-white/10 rounded-2xl px-6 py-5 text-lg focus:outline-none focus:border-primary/50 font-mono text-center tracking-[0.5em]" />
-                           </div>
-                        </div>
-                        <button onClick={handlePaymentAndBooking} disabled={isProcessing} className="w-full bg-primary hover:bg-white hover:text-primary text-white font-black py-6 rounded-2xl shadow-3xl shadow-primary/30 transition-all uppercase tracking-[0.3em] text-sm relative overflow-hidden group">
-                          {isProcessing ? (
-                            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }} className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full mx-auto" />
-                          ) : (
-                            "Pay & Confirm"
-                          )}
-                        </button>
-                        <p className="text-[10px] text-center text-slate-500 font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3"><ShieldCheck className="w-4 h-4" /> 256-Bit Secure Checkout</p>
+                      <div className="relative p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden shadow-3xl border border-white/10 flex flex-col items-center text-center">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-32 -mt-32 blur-[100px] pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/20 rounded-full -ml-24 -mb-24 blur-[80px] pointer-events-none" />
+                        
+                        {isProcessing ? (
+                           <motion.div 
+                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} 
+                             className="flex flex-col items-center justify-center py-12 z-10 w-full"
+                           >
+                             <div className="relative w-28 h-28 mb-8">
+                               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }} className="absolute inset-0 rounded-full border-[3px] border-white/5 border-t-primary shadow-[0_0_30px_rgba(232,78,27,0.3)]" />
+                               <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="absolute inset-3 rounded-full border-[3px] border-white/5 border-b-accent opacity-50" />
+                               <ShieldCheck className="w-10 h-10 text-primary absolute inset-0 m-auto animate-pulse" />
+                             </div>
+                             <h4 className="text-2xl font-black font-display animate-pulse text-white mb-2 tracking-tighter">Verifying Bank Transaction...</h4>
+                             <p className="text-slate-400 text-sm max-w-sm leading-relaxed">Securely pinging the HDFC network. Please do not close this window or hit back.</p>
+                           </motion.div>
+                        ) : (
+                           <>
+                             <div className="relative z-10 group cursor-pointer mb-6">
+                               {/* Premium Outer Border Layer */}
+                               <div className="p-2 rounded-[2rem] bg-gradient-to-tr from-white/10 via-white/5 to-white/10 shadow-2xl relative transition-transform group-hover:scale-105 duration-500 overflow-hidden backdrop-blur-md border border-white/20">
+                                  {/* Inner White Scanner Box */}
+                                  <div className="bg-white p-3 rounded-[1.5rem] relative overflow-hidden">
+                                     <QRCodeSVG value={upiString} size={220} level="H" />
+                                     <motion.div 
+                                        animate={{ top: [0, 220, 0] }}
+                                        transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                                        className="absolute left-0 w-full h-[3px] bg-primary shadow-[0_0_20px_5px_rgba(232,78,27,0.8)] z-20 pointer-events-none rounded-full" 
+                                     />
+                                  </div>
+                               </div>
+                             </div>
+                            
+                             <h4 className="text-3xl font-black font-display mb-3 tracking-tighter text-white z-10">₹{finalTotal}</h4>
+                             
+                             <div className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-3 z-10 mb-6">
+                               <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                               <span className="text-slate-300 text-xs font-mono tracking-widest">pprai1009@okhdfcbank</span>
+                             </div>
+
+                             <p className="text-slate-400 text-sm mb-10 z-10 max-w-sm mx-auto leading-relaxed">Scan with GPay, PhonePe, or Paytm to pay exactly ₹{finalTotal}.</p>
+                            
+                             <div className="w-full flex gap-4 z-10 mt-auto">
+                               <a href={upiString} className="flex-1 bg-white/5 hover:bg-white/10 text-white font-black py-4 rounded-xl border border-white/10 transition-all uppercase tracking-[0.1em] text-[10px] flex items-center justify-center gap-2">
+                                  <QrCode className="w-4 h-4" /> Open App
+                               </a>
+                              
+                               <button onClick={handlePaymentAndBooking} className="flex-1 bg-primary hover:bg-white hover:text-primary text-white font-black py-4 rounded-xl shadow-[0_0_40px_rgba(232,78,27,0.4)] hover:shadow-[0_0_60px_rgba(232,78,27,0.6)] transition-all uppercase tracking-[0.2em] text-[10px] relative overflow-hidden group">
+                                  I Have Paid
+                               </button>
+                             </div>
+                           </>
+                        )}
                       </div>
-                    </div>
-                  </motion.div>
-                )}
+                    </motion.div>
+                  );
+                })()}
               </div>
             </motion.div>
           )}

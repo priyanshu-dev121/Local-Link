@@ -12,11 +12,11 @@ const footerLinks = {
     { label: "Delivery", href: "/services" },
   ],
   Company: [
-    { label: "About Us", href: "#" },
+    { label: "About Us", href: "/about" },
     { label: "How it Works", href: "/how-it-works" },
-    { label: "Careers", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Press", href: "#" },
+    { label: "Blog", href: "/blog" },
+    { label: "Rulebook", href: "/terms" },
+    { label: "Press", href: "/press" },
   ],
   Contact: [
     { label: "rajanbhatt257@gmail.com", href: "mailto:rajanbhatt257@gmail.com", icon: Mail },
@@ -135,8 +135,12 @@ const Footer = () => (
         <span>© {new Date().getFullYear()} LocalLink. All rights reserved.</span>
         <span className="hidden sm:block">Built with ❤️ for Kalpathon 2.0</span>
         <div className="flex gap-5">
-          {["Privacy Policy", "Terms", "Cookies"].map((t) => (
-            <a key={t} href="#" className="hover:text-violet-400 transition-colors duration-200">{t}</a>
+          {[
+            { label: "Privacy Policy", path: "/terms" },
+            { label: "Terms & Conditions", path: "/terms" },
+            { label: "Rulebook", path: "/terms" }
+          ].map((t) => (
+            <Link key={t.label} to={t.path} className="hover:text-primary transition-colors duration-200">{t.label}</Link>
           ))}
         </div>
       </div>

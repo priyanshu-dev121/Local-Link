@@ -9,6 +9,7 @@ import { format } from "date-fns";
 const navLinks = [
   { label: "Home", path: "/" },
   { label: "Services", path: "/services" },
+  { label: "Our Centers", path: "/centers" },
   { label: "How it Works", path: "/how-it-works" },
 ];
 
