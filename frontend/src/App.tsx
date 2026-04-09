@@ -9,6 +9,7 @@ import Services from "./pages/Services";
 import ProviderProfile from "./pages/ProviderProfile";
 import Booking from "./pages/Booking";
 import Login from "./pages/Login";
+import VerifyOTP from "./pages/VerifyOTP";
 import Dashboard from "./pages/Dashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import HowItWorks from "./pages/HowItWorks";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/booking/:serviceId" element={<Booking />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
           <Route path="*" element={<NotFound />} />

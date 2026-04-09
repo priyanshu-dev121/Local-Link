@@ -16,6 +16,7 @@ const Login = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
@@ -28,31 +29,38 @@ const Login = () => {
     const endpoint = isSignup ? "/auth/signup" : "/auth/login";
 
     try {
-      const res = await API.post(endpoint, {
+      const deviceToken = localStorage.getItem("deviceToken") || undefined;
+    const res = await API.post(endpoint, {
         name: isSignup ? name : undefined,
         email,
+        phone: isSignup ? phone : undefined,
         password,
-        role: isSignup ? role : undefined
+        role: isSignup ? role : undefined,
+        deviceToken: !isSignup ? deviceToken : undefined // only send on login
       });
 
       console.log("Auth response:", res.data);
 
       if (isSignup) {
-        toast.success("Signup successful. Please login.");
-        setIsSignup(false);
-        setName("");
-        setEmail("");
-        setPassword("");
-      } else {
-        toast.success("Login successful");
+        // Signup always requires OTP
+        toast.success("Account created! Please verify your email/phone.");
+        localStorage.setItem("pendingVerificationEmail", email);
+        navigate("/verify");
+      } else if (res.data.skipOtp) {
+        // Trusted browser — skip OTP entirely
+        toast.success("Welcome back! Trusted device recognized.");
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
-        
         if (res.data.user.role === "provider") {
           navigate("/provider-dashboard");
         } else {
           navigate("/dashboard");
         }
+      } else {
+        // Unrecognized browser — require OTP
+        toast.success("Welcome back! Please verify your identity.");
+        localStorage.setItem("pendingVerificationEmail", email);
+        navigate("/verify");
       }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,6 +144,19 @@ const Login = () => {
                   className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                 />
               </div>
+
+              {isSignup && (
+                 <div className="relative group">
+                   <div className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-500 group-focus-within:text-primary transition-colors text-sm">+91</div>
+                   <input
+                     type="tel"
+                     placeholder="Phone Number (for SMS Verification)"
+                     value={phone}
+                     onChange={(e) => setPhone(e.target.value)}
+                     className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 tracking-wider"
+                   />
+                 </div>
+              )}
 
               <div className="relative group">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
