@@ -80,6 +80,7 @@ const Booking = () => {
 
   if (!service && !confirmed) return null;
 
+  return (
     <Layout>
       <section className="py-20 min-h-screen bg-slate-950 relative overflow-hidden">
         {/* Animated Background blobs */}
