@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { DollarSign, Users, Star, TrendingUp, CheckCircle, Clock, Calendar } from "lucide-react";
+import { DollarSign, Users, Star, TrendingUp, CheckCircle, Clock, Calendar, MapPin } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import API from "@/api/api";
