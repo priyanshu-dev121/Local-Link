@@ -34,6 +34,21 @@ const Login = () => {
       return;
     }
 
+    if (isSignup) {
+      if (password.length < 8) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      }
+      if (!/\d/.test(password)) {
+        toast.error("Password must contain at least one number");
+        return;
+      }
+      if (!/[A-Z]/.test(password)) {
+        toast.error("Password must contain at least one uppercase letter");
+        return;
+      }
+    }
+
     const endpoint = isSignup ? "/auth/signup" : "/auth/login";
 
     try {
@@ -161,6 +176,19 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                 />
+                {isSignup && (
+                  <div className="mt-3 flex gap-3 px-2">
+                    <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${password.length >= 8 ? 'text-emerald-500' : 'text-slate-500 opacity-50'}`}>
+                      <div className={`w-1 h-1 rounded-full ${password.length >= 8 ? 'bg-emerald-500' : 'bg-slate-500'}`} /> 8+ Chars
+                    </div>
+                    <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${/\d/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-50'}`}>
+                      <div className={`w-1 h-1 rounded-full ${/\d/.test(password) ? 'bg-emerald-500' : 'bg-slate-500'}`} /> 1 Number
+                    </div>
+                    <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${/[A-Z]/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-50'}`}>
+                      <div className={`w-1 h-1 rounded-full ${/[A-Z]/.test(password) ? 'bg-emerald-500' : 'bg-slate-500'}`} /> 1 Upper
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
