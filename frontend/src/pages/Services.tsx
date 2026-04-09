@@ -39,14 +39,21 @@ const Services = () => {
 
   }, []);
 
-  const categories = ["All", "Plumber", "Electrician", "Cleaning", "Other"];
+  const categories = [
+  "All",
+  "plumber",
+  "electrician",
+  "cleaning",
+  "painter"
+ ];
 
   const filtered = useMemo(() => {
 
     return services.filter((s) => {
 
       const matchCat =
-        activeCategory === "All" || s.category === activeCategory;
+           activeCategory === "All" ||
+           s.category.toLowerCase() === activeCategory.toLowerCase();
 
       const matchSearch =
         s.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -110,7 +117,9 @@ const Services = () => {
                 variant={activeCategory === cat ? "default" : "outline"}
                 onClick={() => setActiveCategory(cat)}
               >
-                {cat}
+                {cat === "All"
+                   ? "All"
+                   : cat.charAt(0).toUpperCase() + cat.slice(1)}
               </Button>
             ))}
 

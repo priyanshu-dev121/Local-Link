@@ -5,22 +5,28 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+
   category: {
     type: String,
     enum: [
-      'electrician',
-      'plumber',
-      'delivery',
-      'cleaning',
-      'home tutor',
-      'painter'
+      "electrician",
+      "plumber",
+      "delivery",
+      "cleaning",
+      "home tutor",
+      "painter"
     ],
     lowercase: true,
     trim: true,
     required: true
   },
+
   price: Number,
-  description: String
+
+  description: String,
+
+  image: String   // ⭐ ADD THIS LINE
+
 }, { timestamps: true });
 
-module.exports = mongoose.model('Service', serviceSchema);
+module.exports = mongoose.model("Service", serviceSchema);
