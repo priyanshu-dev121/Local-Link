@@ -26,7 +26,7 @@ const Services = () => {
 
     const fetchServices = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/services`)
+        const res = await fetch("https://neighbourhood-service-marketplace.onrender.com/api/services")
         const data = await res.json();
         setServices(data);
         console.log("Backend services:", data);
