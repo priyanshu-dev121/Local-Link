@@ -225,7 +225,7 @@ const Navbar = () => {
               <Link to="/login">
                 <Button variant="outline" size="sm" className="hover:border-primary hover:text-primary transition-colors">Log in</Button>
               </Link>
-              <Link to="/login">
+              <Link to="/login?mode=signup">
                 <Button size="sm" className="shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-0.5">Sign up</Button>
               </Link>
             </div>
@@ -272,7 +272,7 @@ const Navbar = () => {
                     <Link to="/login" className="flex-1" onClick={() => setIsOpen(false)}>
                       <Button variant="outline" size="sm" className="w-full">Log in</Button>
                     </Link>
-                    <Link to="/login" className="flex-1" onClick={() => setIsOpen(false)}>
+                    <Link to="/login?mode=signup" className="flex-1" onClick={() => setIsOpen(false)}>
                       <Button size="sm" className="w-full shadow-primary/20">Sign up</Button>
                     </Link>
                   </div>

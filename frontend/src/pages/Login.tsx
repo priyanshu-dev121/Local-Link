@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { toast } from "sonner";
 import API from "@/api/api";
@@ -10,9 +10,18 @@ import API from "@/api/api";
 const Login = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(location.search.includes("mode=signup"));
   const [role, setRole] = useState<"customer" | "provider">("customer");
+
+  useEffect(() => {
+    if (location.search.includes("mode=signup")) {
+      setIsSignup(true);
+    } else {
+      setIsSignup(false);
+    }
+  }, [location.search]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

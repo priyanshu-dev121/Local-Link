@@ -438,7 +438,7 @@ const Index = () => {
                 Join thousands of happy customers and service providers securely trading high-quality services right around the corner.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
-                <Link to="/login" className="w-full sm:w-auto">
+                <Link to="/login?mode=signup" className="w-full sm:w-auto">
                   <Button size="lg" className="w-full rounded-2xl bg-white text-primary hover:bg-gray-50 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 text-lg font-bold px-10 h-16">
                     Get Started Free
                   </Button>
