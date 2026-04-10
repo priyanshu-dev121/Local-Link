@@ -33,6 +33,18 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  businessName: {
+    type: String,
+    required: false
+  },
+  experience: {
+    type: Number,
+    required: false
+  },
+  bio: {
+    type: String,
+    required: false
+  },
   trustedDevices: [{
     token: { type: String },
     expiresAt: { type: Date }

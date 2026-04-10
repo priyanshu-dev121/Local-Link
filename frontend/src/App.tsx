@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import VerifyOTP from "./pages/VerifyOTP";
 import Dashboard from "./pages/Dashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import ServiceDetails from "./pages/ServiceDetails";
 import HowItWorks from "./pages/HowItWorks";
 import Centers from "./pages/Centers";
 import Blog from "./pages/Blog";
@@ -32,6 +33,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/service/:id" element={<ServiceDetails />} />
           <Route path="/centers" element={<Centers />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />

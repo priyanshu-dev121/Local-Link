@@ -19,3 +19,29 @@ exports.getUsers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// 👉 GET CURRENT USER
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// 👉 UPDATE PROFILE
+exports.updateProfile = async (req, res) => {
+  try {
+    const { businessName, experience, bio } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { businessName, experience, bio },
+      { new: true, runValidators: true }
+    ).select('-password');
+    
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

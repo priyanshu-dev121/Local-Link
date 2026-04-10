@@ -50,11 +50,18 @@ const ServiceCard = ({ service }: { service: ServiceData }) => (
         </div>
       </div>
 
-      <Link to={`/booking/${service._id}`}>
-        <button className="w-full mt-8 bg-white/5 text-white hover:bg-primary py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all border border-white/10 hover:border-primary active:scale-95">
-          Select Service
-        </button>
-      </Link>
+      <div className="flex flex-col gap-3 mt-8">
+        <Link to={`/service/${service._id}`} className="w-full">
+          <button className="w-full bg-primary text-white hover:bg-white hover:text-primary py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-primary shadow-xl shadow-primary/20 active:scale-95">
+            View Details
+          </button>
+        </Link>
+        <Link to={`/booking/${service._id}`} className="w-full">
+          <button className="w-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-white/5 active:scale-95">
+            Quick Book
+          </button>
+        </Link>
+      </div>
     </div>
   </motion.div>
 );

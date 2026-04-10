@@ -34,12 +34,14 @@ const Services = () => {
   }, []);
 
   const categories = [
-  "All",
-  "plumber",
-  "electrician",
-  "cleaning",
-  "painter"
- ];
+    "All",
+    "plumber",
+    "electrician",
+    "cleaning",
+    "painter",
+    "delivery",
+    "home tutor"
+  ];
 
   const filtered = useMemo(() => {
     return services.filter((s) => {

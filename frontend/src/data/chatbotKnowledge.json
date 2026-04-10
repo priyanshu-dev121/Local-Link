@@ -1,0 +1,104 @@
+{
+  "intents": {
+    "greeting": {
+      "keywords": ["hi", "hello", "hey", "hola", "namaste"],
+      "responses": [
+        "Greetings! I'm your LocalLink AI. Ready to help you discover the best service providers in your neighborhood?",
+        "Hello! I hope you're having a productive day. How can I assist you with your home or office needs?",
+        "Hi! From leaky pipes to messy rooms, I'm here to find your local solution. What's the plan for today?"
+      ]
+    },
+    "about": {
+      "keywords": ["who are you", "what is locallink", "about this web", "purpose"],
+      "responses": [
+        "LocalLink is a high-end marketplace designed to bridge the gap between skilled neighborhood professionals and people who need their help. We focus on trust, quality, and community!",
+        "I am the LocalLink Assistant, powered by AI. My goal is to make hiring local talent as easy as ordering a pizza."
+      ]
+    },
+    "plumbing": {
+      "keywords": ["plumb", "pipe", "leak", "tap", "sink", "toilet", "drain", "water"],
+      "responses": [
+        "Water trouble? I've found multiple certified LocalLink plumbers. Bringing their profiles up for you now!",
+        "Dealing with a leak? Don't let it sit! I'm redirecting you to our LocalLink emergency plumbing specialists."
+      ],
+      "action": "navigate",
+      "target": "/services?category=plumbing"
+    },
+    "electrical": {
+      "keywords": ["electr", "wire", "plug", "short", "light", "fan", "switch", "fuse"],
+      "responses": [
+        "Electrical issues are serious. I'm prioritizing the highest-rated providers for you. One moment while I redirect...",
+        "Need a new installation or a repair? Our local experts are just a click away!"
+      ],
+      "action": "navigate",
+      "target": "/services"
+    },
+    "cleaning": {
+      "keywords": ["clean", "maid", "dust", "mop", "wash", "housekeep", "janitor"],
+      "responses": [
+        "Sparkling clean homes are our specialty! I'll take you to the cleaning experts section.",
+        "Need a deep clean or a regular maid? I'm finding the best available slots for you on LocalLink."
+      ],
+      "action": "navigate",
+      "target": "/services"
+    },
+    "carpentry": {
+      "keywords": ["carpenter", "wood", "furniture", "door", "window", "cabinet", "chair"],
+      "responses": [
+        "Crafting some changes? I know exactly who can help with your woodwork. Redirecting you to our expert LocalLink carpenters!",
+        "Broken furniture? Let's get that fixed. I'm pulling up the best professionals on our platform."
+      ],
+      "action": "navigate",
+      "target": "/services"
+    },
+    "pricing": {
+      "keywords": ["price", "cost", "charge", "rate", "cheap", "expensive", "how much", "fees"],
+      "responses": [
+        "On LocalLink, providers set their own fair rates. Most start around $25/hr. Use my filters to find someone who fits your budget perfectly!",
+        "Value for money is our priority. You can see exact, transparent pricing on every professional's profile. No hidden fees!"
+      ]
+    },
+    "payment": {
+      "keywords": ["pay", "money", "card", "cash", "transaction", "secure", "razorpay"],
+      "responses": [
+        "We support secure payments via Razorpay. Your money is held safely until the job is completed to your satisfaction!",
+        "LocalLink uses bank-grade security for all transactions. You can pay with cards, UPI, or net banking."
+      ]
+    },
+    "emergency": {
+      "keywords": ["urgent", "emergency", "asap", "now", "help fast", "broken"],
+      "responses": [
+        "I hear you! I'm filtering for 'Available Now' providers who can reach you immediately. Please hold while I scan the neighborhood...",
+        "Emergencies are top priority. Scan the 'Active' badges on provider profiles for the fastest response!"
+      ]
+    },
+    "booking": {
+      "keywords": ["book", "hire", "appoint", "schedule", "reserve"],
+      "responses": [
+        "Found someone you like? Just hit 'Book Now' on Their profile to start your journey. It's that simple!",
+        "Scheduling is a breeze. Pick your preferred slot, confirm the details, and your LocalLink pro will be there."
+      ]
+    },
+    "complaint": {
+      "keywords": ["bad", "terrible", "scam", "issue", "problem", "angry", "not working"],
+      "responses": [
+        "I'm very sorry to hear that. Your trust is our #1 asset. Please head to the Help Center or tell me specifically what happened so I can escalate it.",
+        "That's not the LocalLink way! Let me get a human support specialist to look into this for you. Check your 'Support' tab."
+      ]
+    },
+    "fallback": {
+      "keywords": ["error_case"],
+      "responses": [
+        "I'm sorry, I couldn't find a specific answer for that. If you need further assistance, please reach out to our support team at locallink108@gmail.com quoting Ticket ID: {{TICKET_ID}}."
+      ]
+    },
+    "thanks": {
+      "keywords": ["thank", "helpful", "good bot", "wow", "amazing", "thanks"],
+      "responses": [
+        "You're very welcome! Making your life easier is literally what I live for.",
+        "Always a pleasure! Remember, at LocalLink, you're not just a user, you're a neighbor.",
+        "Glad to be of service! Anything else on the list today?"
+      ]
+    }
+  }
+}

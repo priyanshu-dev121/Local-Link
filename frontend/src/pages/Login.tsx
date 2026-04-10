@@ -136,7 +136,7 @@ const Login = () => {
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    {r === "customer" ? "Customer" : "Expert"}
+                    {r === "customer" ? "Customer" : "Provider"}
                   </button>
                 ))}
               </div>

@@ -6,7 +6,7 @@ const protect = require('../Middleware/authmiddleware');
 
 router.get('/', async (req, res) => {
   try {
-    const services = await Service.find();
+    const services = await Service.find().populate('provider', 'name businessName');
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const service = await Service.findById(req.params.id);
+    const service = await Service.findById(req.params.id).populate('provider', 'name businessName experience bio');
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
@@ -25,7 +25,28 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/my-services', protect, async (req, res) => {
+  try {
+    const services = await Service.find({ provider: req.user._id });
+    res.json(services);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post('/', protect, createService);
+
+router.delete('/:id', protect, async (req, res) => {
+  try {
+    const service = await Service.findOneAndDelete({ _id: req.params.id, provider: req.user._id });
+    if (!service) {
+      return res.status(404).json({ message: "Service not found or unauthorized" });
+    }
+    res.json({ message: "Service deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
 

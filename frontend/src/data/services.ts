@@ -1,25 +1,63 @@
 import { ServiceData } from "@/components/ServiceCard";
 
 export const categories = [
-  { name: "Plumbing", icon: "🔧", color: "bg-blue-100 text-blue-700" },
-  { name: "Electrical", icon: "⚡", color: "bg-yellow-100 text-yellow-700" },
-  { name: "Tutoring", icon: "📚", color: "bg-green-100 text-green-700" },
-  { name: "Cleaning", icon: "🧹", color: "bg-purple-100 text-purple-700" },
-  { name: "Mechanics", icon: "🔩", color: "bg-red-100 text-red-700" },
-  { name: "Delivery", icon: "📦", color: "bg-orange-100 text-orange-700" },
-  { name: "Painting", icon: "🎨", color: "bg-pink-100 text-pink-700" },
-  { name: "Gardening", icon: "🌱", color: "bg-emerald-100 text-emerald-700" },
+  { name: "plumber", icon: "🚰", color: "bg-blue-100 text-blue-700" },
+  { name: "electrician", icon: "⚡", color: "bg-yellow-100 text-yellow-700" },
+  { name: "home tutor", icon: "📚", color: "bg-green-100 text-green-700" },
+  { name: "cleaning", icon: "🧹", color: "bg-purple-100 text-purple-700" },
+  { name: "delivery", icon: "📦", color: "bg-orange-100 text-orange-700" },
+  { name: "painter", icon: "🎨", color: "bg-pink-100 text-pink-700" }
 ];
 
 export const services: ServiceData[] = [
-  { id: "1", name: "Pipe Repair & Installation", provider: "Rajesh Kumar", category: "Plumbing", price: 499, rating: 4.8, reviews: 124, image: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400&h=300&fit=crop", location: "Koramangala", duration: "1-2 hrs" },
-  { id: "2", name: "Home Wiring & Repair", provider: "Suresh Electricals", category: "Electrical", price: 699, rating: 4.9, reviews: 89, image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop", location: "HSR Layout", duration: "2-3 hrs" },
-  { id: "3", name: "Math & Science Tutor", provider: "Priya Sharma", category: "Tutoring", price: 399, rating: 4.7, reviews: 56, image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop", location: "Indiranagar", duration: "1 hr" },
-  { id: "4", name: "Deep Home Cleaning", provider: "CleanPro Services", category: "Cleaning", price: 1299, rating: 4.6, reviews: 201, image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop", location: "Whitefield", duration: "3-4 hrs" },
-  { id: "5", name: "Car Service & Repair", provider: "AutoFix Garage", category: "Mechanics", price: 1999, rating: 4.5, reviews: 78, image: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&h=300&fit=crop", location: "JP Nagar", duration: "4-5 hrs" },
-  { id: "6", name: "Express Package Delivery", provider: "QuickShip", category: "Delivery", price: 149, rating: 4.4, reviews: 312, image: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop", location: "All Areas", duration: "1-2 hrs" },
-  { id: "7", name: "Interior Wall Painting", provider: "ColorCraft", category: "Painting", price: 2499, rating: 4.8, reviews: 45, image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&h=300&fit=crop", location: "BTM Layout", duration: "1-2 days" },
-  { id: "8", name: "Garden Maintenance", provider: "GreenThumb", category: "Gardening", price: 799, rating: 4.7, reviews: 67, image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop", location: "Jayanagar", duration: "2-3 hrs" },
+  { 
+    _id: "1", 
+    title: "Pipe Repair & Installation", 
+    category: "plumber", 
+    price: 499, 
+    description: "Expert fixing of burst pipes, faucets, and drain blockages. Professional and reliable.",
+    image: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400&h=300&fit=crop"
+  },
+  { 
+    _id: "2", 
+    title: "Home Wiring & Repair", 
+    category: "electrician", 
+    price: 699, 
+    description: "Complete home electrical safety check, wiring repairs, and new socket installations.",
+    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop"
+  },
+  { 
+    _id: "3", 
+    title: "Math & Science Tutor", 
+    category: "home tutor", 
+    price: 399, 
+    description: "Personalized home tuition for students. Specializing in advanced math and physics.",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop"
+  },
+  { 
+    _id: "4", 
+    title: "Deep Home Cleaning", 
+    category: "cleaning", 
+    price: 1299, 
+    description: "Full house sanitization and deep cleaning including kitchen, bathroom, and windows.",
+    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop"
+  },
+  { 
+    _id: "6", 
+    title: "Express Package Delivery", 
+    category: "delivery", 
+    price: 149, 
+    description: "Safe and fast doorstep delivery of packages and groceries across the neighborhood.",
+    image: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop"
+  },
+  { 
+    _id: "7", 
+    title: "Interior Wall Painting", 
+    category: "painter", 
+    price: 2499, 
+    description: "Professional wall painting with smooth finish and premium materials. Texture options available.",
+    image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&h=300&fit=crop"
+  }
 ];
 
 export const testimonials = [
