@@ -215,8 +215,11 @@ const ProviderDashboard = () => {
               <p className="mt-3 text-slate-400 font-bold uppercase tracking-widest text-xs">Business Profile • {user.name}</p>
             </div>
             <div className="flex gap-4">
-               <Button onClick={fetchData} variant="outline" className="rounded-full bg-white/5 border-white/10 hover:bg-white/10">
-                  <Clock className="w-4 h-4 mr-2" /> Refresh
+               <Button onClick={fetchData} variant="outline" className="rounded-full bg-white/10 border-white/20 hover:bg-white/20 text-white font-bold transition-all shadow-lg active:scale-95">
+                  <Clock className="w-4 h-4 mr-2 text-primary" /> Refresh
+               </Button>
+               <Button onClick={() => setShowAddModal(true)} className="bg-primary hover:bg-primary/90 rounded-full font-black text-[10px] uppercase tracking-widest px-8 shadow-xl shadow-primary/20">
+                  Host New Service
                </Button>
                {(['bookings', 'services', 'profile']).map(tab => (
                  <button 
