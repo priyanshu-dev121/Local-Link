@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Clock, MapPin, Star, ShieldCheck, ArrowLeft, Calendar, Check, Briefcase, User, Info } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import API from "@/api/api";
+import API, { BACKEND_URL } from "@/api/api";
 import { toast } from "sonner";
 
 const ServiceDetails = () => {
@@ -28,6 +28,12 @@ const ServiceDetails = () => {
     fetchServiceDetails();
   }, [id, navigate]);
 
+  const getImageUrl = (path: string) => {
+    if (!path) return "https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=800";
+    if (path.startsWith('http')) return path;
+    return `${BACKEND_URL}${path}`;
+  };
+
   if (loading) return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading LocalLink Details...</div>;
   if (!service) return null;
 
@@ -50,7 +56,7 @@ const ServiceDetails = () => {
               className="lg:col-span-7"
             >
               <div className="relative rounded-[3rem] overflow-hidden border border-white/10 shadow-3xl aspect-video mb-8">
-                <img src={service.image} className="w-full h-full object-cover" alt={service.title} />
+                <img src={getImageUrl(service.image)} className="w-full h-full object-cover" alt={service.title} />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
                 <div className="absolute bottom-10 left-10">
                    <span className="px-6 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-2xl">{service.category}</span>
@@ -137,7 +143,7 @@ const ServiceDetails = () => {
                    <div className="flex items-center gap-6 mb-8">
                       <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-white text-3xl font-black overflow-hidden relative">
                          {service.provider?.image ? (
-                            <img src={service.provider.image} className="w-full h-full object-cover" alt="Provider" />
+                            <img src={getImageUrl(service.provider.image)} className="w-full h-full object-cover" alt="Provider" />
                          ) : (
                             <span>{service.provider?.name?.charAt(0) || <User className="w-10 h-10" />}</span>
                          )}

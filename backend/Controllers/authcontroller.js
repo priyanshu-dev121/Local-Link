@@ -73,38 +73,19 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    // --- TRUSTED DEVICE CHECK ---
-    // If browser sends a deviceToken, check if it's valid and not expired
-    if (deviceToken) {
-      const hashedIncoming = crypto.createHash('sha256').update(deviceToken).digest('hex');
-      const trustedDevice = user.trustedDevices?.find(
-        d => d.token === hashedIncoming && new Date(d.expiresAt) > new Date()
-      );
-
-      if (trustedDevice) {
-        // Trusted browser! Skip OTP — issue JWT directly
-        const token = jwt.sign(
-          { id: user._id, role: user.role },
-          process.env.JWT_SECRET,
-          { expiresIn: "7d" }
-        );
-        return res.json({
-          message: "Trusted device login successful",
-          skipOtp: true,
-          token,
-          user: { id: user._id, name: user.name, email: user.email, role: user.role }
-        });
-      }
-    }
-
-    // Not a trusted device — send OTP
-    const otp = generateOTP();
-    user.otp = otp;
-    user.otpExpiresAt = new Date(Date.now() + 10 * 60000); // 10 mins
-    await user.save();
-
-    await sendOTPEmail(user.email, otp);
-    res.json({ message: "Verification code sent to your email", email: user.email });
+    // LOGIN SUCCESS — Skip OTP for return users as requested
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" }
+    );
+    
+    res.json({ 
+      message: "Login successful", 
+      skipOtp: true, // Frontend will catch this and redirect
+      token, 
+      user: { id: user._id, name: user.name, email: user.email, role: user.role } 
+    });
 
   } catch (error) {
     res.status(500).json({ error: error.message });

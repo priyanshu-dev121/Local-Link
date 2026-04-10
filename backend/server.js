@@ -10,10 +10,12 @@ const cors = require('cors');
 
 // app init
 const app = express();
+const path = require('path');
 
 // middleware
 app.use(express.json()); // to read JSON data
 app.use(cors()); // allow frontend requests
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // basic route (health check)
 app.get('/', (req, res) => {
@@ -24,8 +26,9 @@ app.get('/', (req, res) => {
 // routes (connect later when you create them)
 app.use('/api/auth', require('./Routes/authRouter'));
 app.use('/api/users', require('./Routes/userRouter'));
- app.use('/api/services', require('./Routes/serviceRouter'));
+app.use('/api/services', require('./Routes/serviceRouter'));
 app.use('/api/bookings', require('./Routes/bookingRouter'));
+app.use('/api/upload', require('./Routes/uploadRouter'));
 
 
 app.use(errorHandler)

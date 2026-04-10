@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { DollarSign, Users, Star, TrendingUp, CheckCircle, Clock, Calendar, MapPin, Plus, Trash2, X, LayoutGrid, Package, Settings, Briefcase, FileText, ImageIcon } from "lucide-react";
+import { DollarSign, Users, Star, TrendingUp, CheckCircle, Clock, Calendar, MapPin, Plus, Trash2, X, LayoutGrid, Package, Settings, Briefcase, FileText, ImageIcon, Upload } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import API from "@/api/api";
+import API, { BACKEND_URL } from "@/api/api";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -21,6 +21,7 @@ const ProviderDashboard = () => {
   const [myServices, setMyServices] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'bookings' | 'services' | 'profile'>('bookings');
+  const [isUploading, setIsUploading] = useState(false);
 
   // New Service State
   const [newService, setNewService] = useState({
@@ -28,7 +29,7 @@ const ProviderDashboard = () => {
     category: "cleaning",
     price: "",
     description: "",
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=800"
+    image: ""
   });
 
   // Profile State
@@ -76,6 +77,31 @@ const ProviderDashboard = () => {
     fetchData();
   }, [navigate]);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'service' | 'profile') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setIsUploading(true);
+    try {
+      const res = await API.post("/upload", formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (target === 'service') {
+        setNewService({ ...newService, image: res.data.url });
+      } else {
+        setProfileData({ ...profileData, image: res.data.url });
+      }
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      toast.error("Error uploading image");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
       await API.put(`/bookings/${id}/status`, { status });
@@ -89,7 +115,7 @@ const ProviderDashboard = () => {
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newService.image) {
-      toast.error("Please provide a showcase image of your work");
+      toast.error("Please upload a showcase image of your work");
       return;
     }
     try {
@@ -99,7 +125,7 @@ const ProviderDashboard = () => {
       });
       toast.success("Service posted successfully!");
       setShowAddModal(false);
-      setNewService({ title: "", category: "cleaning", price: "", description: "", image: "https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=800" });
+      setNewService({ title: "", category: "cleaning", price: "", description: "", image: "" });
       fetchData();
     } catch (error) {
       toast.error("Error posting service");
@@ -129,6 +155,12 @@ const ProviderDashboard = () => {
     } catch (error) {
       toast.error("Error updating profile");
     }
+  };
+
+  const getImageUrl = (path: string) => {
+    if (!path) return "https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=800";
+    if (path.startsWith('http')) return path;
+    return `${BACKEND_URL}${path}`;
   };
 
   if (!user) return <div className="p-10 bg-slate-950 min-h-screen text-white">Loading LocalLink Dashboard...</div>;
@@ -261,7 +293,7 @@ const ProviderDashboard = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       className="bg-white/5 rounded-[2.5rem] overflow-hidden border border-white/10 group relative"
                     >
-                      <img src={service.image} className="w-full h-48 object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+                      <img src={getImageUrl(service.image)} className="w-full h-48 object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
                       <div className="p-8">
                         <div className="flex justify-between items-start mb-4">
                            <span className="px-3 py-1 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-full">{service.category}</span>
@@ -289,11 +321,11 @@ const ProviderDashboard = () => {
             {activeTab === 'profile' && (
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-black text-white tracking-tight mb-8">Business Profile Settings</h2>
-                <form onSubmit={handleUpdateProfile} className="space-y-8 bg-white/5 p-10 rounded-[3rem] border border-white/10 backdrop-blur-3xl relative overflow-hidden">
+                <div className="space-y-8 bg-white/5 p-10 rounded-[3rem] border border-white/10 backdrop-blur-3xl relative overflow-hidden">
                    {/* Background Profile Image Glow */}
                    {profileData.image && (
                       <div className="absolute top-0 right-0 w-64 h-64 opacity-10 pointer-events-none">
-                         <img src={profileData.image} className="w-full h-full object-cover blur-3xl" />
+                         <img src={getImageUrl(profileData.image)} className="w-full h-full object-cover blur-3xl" />
                       </div>
                    )}
 
@@ -325,15 +357,26 @@ const ProviderDashboard = () => {
 
                    <div className="space-y-3">
                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4 flex items-center gap-2">
-                       <ImageIcon className="w-3 h-3" /> Profile / Portfolio Image URL
+                       <ImageIcon className="w-3 h-3" /> Profile / Portfolio Image
                      </label>
-                     <Input 
-                      value={profileData.image} 
-                      onChange={(e) => setProfileData({...profileData, image: e.target.value})}
-                      placeholder="Paste a direct image link (Unsplash, etc.)" 
-                      className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all text-white font-bold"
-                     />
-                     <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest ml-4">This will be showcased to users as your professional identity.</p>
+                     <div className="flex flex-col sm:flex-row gap-6 items-center">
+                        <div className="w-32 h-32 rounded-3xl bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center relative group">
+                           {profileData.image ? (
+                              <img src={getImageUrl(profileData.image)} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                           ) : (
+                              <ImageIcon className="w-8 h-8 text-slate-700" />
+                           )}
+                           {isUploading && <div className="absolute inset-0 bg-slate-900/60 backdrop-blur flex items-center justify-center"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}
+                        </div>
+                        <div className="flex-1 w-full">
+                           <label className="w-full h-14 bg-white/5 border border-dashed border-white/20 rounded-2xl flex items-center justify-center gap-3 cursor-pointer hover:bg-white/10 transition-all group">
+                              <Upload className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                              <span className="font-black text-xs uppercase tracking-widest text-slate-400">Browse Device</span>
+                              <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'profile')} />
+                           </label>
+                           <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest mt-3 ml-2">* Your identity help build trust with clients.</p>
+                        </div>
+                     </div>
                    </div>
                    
                    <div className="space-y-3">
@@ -348,10 +391,10 @@ const ProviderDashboard = () => {
                      />
                    </div>
 
-                   <Button type="submit" className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95">
+                   <Button onClick={handleUpdateProfile} className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95">
                      Save Profile Details
                    </Button>
-                </form>
+                </div>
               </div>
             )}
           </div>
@@ -385,7 +428,7 @@ const ProviderDashboard = () => {
                     value={newService.title} 
                     onChange={(e) => setNewService({...newService, title: e.target.value})}
                     placeholder="e.g. Premium Home Deep Cleaning" 
-                    className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all" 
+                    className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all font-bold" 
                     required 
                    />
                  </div>
@@ -408,22 +451,29 @@ const ProviderDashboard = () => {
                         value={newService.price} 
                         onChange={(e) => setNewService({...newService, price: e.target.value})}
                         placeholder="0.00" 
-                        className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all" 
+                        className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all font-bold" 
                         required 
                        />
                     </div>
                  </div>
 
                  <div className="space-y-2">
-                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4">Showcase Image (Your Work)</label>
-                   <Input 
-                    value={newService.image} 
-                    onChange={(e) => setNewService({...newService, image: e.target.value})}
-                    placeholder="Paste a direct image link showcasing your best work" 
-                    className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all" 
-                    required 
-                   />
-                   <p className="text-[9px] text-primary font-bold uppercase tracking-widest ml-4 italic">* Mandatory to show users the quality of your work.</p>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4">Service Showcase Photo</label>
+                   <div className="flex gap-6 items-center">
+                        <div className="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center relative">
+                           {newService.image ? (
+                              <img src={getImageUrl(newService.image)} className="w-full h-full object-cover" />
+                           ) : (
+                              <ImageIcon className="w-6 h-6 text-slate-800" />
+                           )}
+                           {isUploading && <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center"><div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}
+                        </div>
+                        <label className="flex-1 h-14 bg-white/5 border border-dashed border-white/20 rounded-2xl flex items-center justify-center gap-3 cursor-pointer hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-widest text-slate-400">
+                           <Upload className="w-4 h-4 text-primary" /> Browse File
+                           <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'service')} />
+                        </label>
+                   </div>
+                   <p className="text-[9px] text-primary font-bold uppercase tracking-widest ml-4 mt-2 italic">* Mandatory to showcase your work.</p>
                  </div>
 
                  <div className="space-y-2">
@@ -437,8 +487,8 @@ const ProviderDashboard = () => {
                    />
                  </div>
 
-                 <Button type="submit" className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95">
-                   Publish Listing
+                 <Button type="submit" disabled={isUploading} className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95 disabled:opacity-50">
+                   {isUploading ? "Uploading Work..." : "Publish Listing"}
                  </Button>
               </form>
             </motion.div>
