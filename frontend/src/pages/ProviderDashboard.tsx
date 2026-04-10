@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { DollarSign, Users, Star, TrendingUp, CheckCircle, Clock, Calendar, MapPin, Plus, Trash2, X, LayoutGrid, Package, Settings, Briefcase, FileText } from "lucide-react";
+import { DollarSign, Users, Star, TrendingUp, CheckCircle, Clock, Calendar, MapPin, Plus, Trash2, X, LayoutGrid, Package, Settings, Briefcase, FileText, ImageIcon } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,8 @@ const ProviderDashboard = () => {
   const [profileData, setProfileData] = useState({
     businessName: "",
     experience: "",
-    bio: ""
+    bio: "",
+    image: ""
   });
 
   const fetchData = async () => {
@@ -43,7 +44,7 @@ const ProviderDashboard = () => {
       const [bookingsRes, servicesRes, userRes] = await Promise.all([
         API.get("/bookings"),
         API.get("/services/my-services"),
-        API.get("/user/me") // Assuming there's a route for this
+        API.get("/users/me")
       ]);
       setBookings(bookingsRes.data);
       setMyServices(servicesRes.data);
@@ -51,7 +52,8 @@ const ProviderDashboard = () => {
         setProfileData({
           businessName: userRes.data.businessName || "",
           experience: userRes.data.experience || "",
-          bio: userRes.data.bio || ""
+          bio: userRes.data.bio || "",
+          image: userRes.data.image || ""
         });
       }
     } catch (error) {
@@ -86,6 +88,10 @@ const ProviderDashboard = () => {
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!newService.image) {
+      toast.error("Please provide a showcase image of your work");
+      return;
+    }
     try {
       await API.post("/services", {
         ...newService,
@@ -114,7 +120,7 @@ const ProviderDashboard = () => {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await API.put("/user/update-profile", { // Assuming this route exists
+      await API.put("/users/update-profile", {
         ...profileData,
         experience: Number(profileData.experience)
       });
@@ -159,7 +165,6 @@ const ProviderDashboard = () => {
             </div>
           </div>
 
-          {/* Stats Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {[
               { label: "Revenue", value: `₹${totalEarnings}`, icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-500/10" },
@@ -284,7 +289,14 @@ const ProviderDashboard = () => {
             {activeTab === 'profile' && (
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-black text-white tracking-tight mb-8">Business Profile Settings</h2>
-                <form onSubmit={handleUpdateProfile} className="space-y-8 bg-white/5 p-10 rounded-[3rem] border border-white/10 backdrop-blur-3xl">
+                <form onSubmit={handleUpdateProfile} className="space-y-8 bg-white/5 p-10 rounded-[3rem] border border-white/10 backdrop-blur-3xl relative overflow-hidden">
+                   {/* Background Profile Image Glow */}
+                   {profileData.image && (
+                      <div className="absolute top-0 right-0 w-64 h-64 opacity-10 pointer-events-none">
+                         <img src={profileData.image} className="w-full h-full object-cover blur-3xl" />
+                      </div>
+                   )}
+
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="space-y-3">
                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4 flex items-center gap-2">
@@ -309,6 +321,19 @@ const ProviderDashboard = () => {
                         className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all text-white font-bold"
                        />
                      </div>
+                   </div>
+
+                   <div className="space-y-3">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4 flex items-center gap-2">
+                       <ImageIcon className="w-3 h-3" /> Profile / Portfolio Image URL
+                     </label>
+                     <Input 
+                      value={profileData.image} 
+                      onChange={(e) => setProfileData({...profileData, image: e.target.value})}
+                      placeholder="Paste a direct image link (Unsplash, etc.)" 
+                      className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all text-white font-bold"
+                     />
+                     <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest ml-4">This will be showcased to users as your professional identity.</p>
                    </div>
                    
                    <div className="space-y-3">
@@ -344,7 +369,7 @@ const ProviderDashboard = () => {
             />
             <motion.div 
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900 border border-white/10 rounded-[2.5rem] w-full max-w-xl p-10 relative z-10 shadow-3xl text-white"
+              className="bg-slate-900 border border-white/10 rounded-[2.5rem] w-full max-w-xl p-10 relative z-10 shadow-3xl text-white max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-8">
                  <h2 className="text-3xl font-black text-white tracking-tighter">Post <span className="text-primary italic">Service</span></h2>
@@ -387,6 +412,18 @@ const ProviderDashboard = () => {
                         required 
                        />
                     </div>
+                 </div>
+
+                 <div className="space-y-2">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4">Showcase Image (Your Work)</label>
+                   <Input 
+                    value={newService.image} 
+                    onChange={(e) => setNewService({...newService, image: e.target.value})}
+                    placeholder="Paste a direct image link showcasing your best work" 
+                    className="bg-white/5 border-white/10 h-14 rounded-2xl px-6 focus:border-primary transition-all" 
+                    required 
+                   />
+                   <p className="text-[9px] text-primary font-bold uppercase tracking-widest ml-4 italic">* Mandatory to show users the quality of your work.</p>
                  </div>
 
                  <div className="space-y-2">

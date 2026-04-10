@@ -13,12 +13,16 @@ const bookingSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'rejected'],
+    enum: ['pending', 'accepted', 'rejected', 'completed'],
     default: 'pending'
   },
   address: {
     type: String,
     required: true
+  },
+  coordinates: {
+    lat: Number,
+    lng: Number
   },
   date: {
     type: Date,

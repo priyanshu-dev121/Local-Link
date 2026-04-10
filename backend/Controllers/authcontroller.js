@@ -1,17 +1,9 @@
 const User = require('../Models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
-// Email transporter using Gmail App Password
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+const transporter = require('../Config/mailer');
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 

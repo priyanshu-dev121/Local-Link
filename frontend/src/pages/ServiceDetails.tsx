@@ -135,8 +135,12 @@ const ServiceDetails = () => {
                 <div className="p-10 rounded-[3rem] bg-slate-900 border border-white/5 shadow-2xl">
                    <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-8">Service Specialist</h3>
                    <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-white text-3xl font-black">
-                         {service.provider?.name?.charAt(0) || <User className="w-10 h-10" />}
+                      <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-white text-3xl font-black overflow-hidden relative">
+                         {service.provider?.image ? (
+                            <img src={service.provider.image} className="w-full h-full object-cover" alt="Provider" />
+                         ) : (
+                            <span>{service.provider?.name?.charAt(0) || <User className="w-10 h-10" />}</span>
+                         )}
                       </div>
                       <div>
                          <h4 className="text-xl font-black text-white tracking-tight">{service.provider?.name || "Verified Provider"}</h4>

@@ -45,6 +45,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  image: {
+    type: String,
+    required: false
+  },
+  coordinates: {
+    lat: Number,
+    lng: Number
+  },
   trustedDevices: [{
     token: { type: String },
     expiresAt: { type: Date }
