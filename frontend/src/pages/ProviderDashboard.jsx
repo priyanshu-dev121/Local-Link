@@ -187,8 +187,9 @@ const ProviderDashboard = () => {
 
   if (!user) return <div className="p-10 bg-slate-950 min-h-screen text-white">Loading LocalLink Dashboard...</div>;
 
-  const pendingBookings = bookings.filter(b => b.status === "pending");
-  const acceptedBookings = bookings.filter(b => b.status === "completed" || b.status === "accepted");
+  // Only show bookings from OTHER users in the "Requests/History" section
+  const pendingBookings = bookings.filter(b => b.status === "pending" && b.user?._id !== user?._id);
+  const acceptedBookings = bookings.filter(b => (b.status === "completed" || b.status === "accepted") && b.user?._id !== user?._id);
   const totalEarnings = acceptedBookings.reduce((sum, b) => sum + (b.service?.price || 0), 0);
 
   return (

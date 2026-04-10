@@ -92,13 +92,21 @@ exports.getBookings = async (req, res) => {
   try {
     let bookings;
     if (req.user.role === 'provider') {
+      // Find services this provider owns
       const myServices = await Service.find({ provider: req.user._id }).select('_id');
-      bookings = await Booking.find({ service: { $in: myServices } })
-        .populate('user', 'name email')
+      
+      // Get bookings for their services (Received) OR bookings they made (Sent)
+      bookings = await Booking.find({ 
+        $or: [
+          { service: { $in: myServices } },
+          { user: req.user._id }
+        ]
+      })
         .populate({
-            path: 'service',
-            populate: { path: 'provider', select: 'name businessName coordinates image' }
+          path: 'service',
+          populate: { path: 'provider', select: 'name businessName' }
         })
+        .populate('user', 'name email phone')
         .sort({ createdAt: -1 });
     } else {
       bookings = await Booking.find({ user: req.user._id })
