@@ -75,11 +75,30 @@ graph TD
 
 ---
 
-## 📁 Repository Structure
+## 📂 Repository Structure
 
-- `frontend/`: React components, Framer Motion animations, and API integration.
-- `backend/`: Express routes, MongoDB models, and Multer file storage.
-- `uploads/`: Dedicated local folder for provider-uploaded service and profile photos.
+```text
+LocalLink/
+├── frontend/               # React (Vite) + Tailwind CSS
+│   ├── src/                # Modern Component-based logic
+│   │   ├── components/     # Reusable UI (Navbar, ChatBot, ServiceCard)
+│   │   ├── pages/          # Full Views (Dashboard, Provider Command, Booking)
+│   │   ├── data/           # Static knowledge & LocalLink Bot data
+│   │   └── api/            # Axios client with BACKEND_URL resolver
+│   ├── index.html          # Application Entry Point
+│   └── package.json        # Frontend dependencies
+│
+├── backend/                # Node.js + Express API
+│   ├── Models/             # MongoDB Schemas (User, Service, Booking)
+│   ├── Controllers/        # Business Logic (Auth, Booking Management)
+│   ├── Routes/             # Endpoints (Auth, Services, Uploads)
+│   ├── Middleware/         # Security (JWT) & File Handling (Multer)
+│   ├── uploads/            # Local Image Storage (Provider Work Photos)
+│   ├── Config/             # System Config (DB, Mailer)
+│   └── server.js           # Core server entry point
+│
+└── README.md               # Project overview & documentation
+```
 
 ---
 
