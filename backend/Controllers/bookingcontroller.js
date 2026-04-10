@@ -136,3 +136,35 @@ exports.updateBookingStatus = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// 👉 Submit Review
+exports.submitReview = async (req, res) => {
+  try {
+    const { rating, text } = req.body;
+    const booking = await Booking.findById(req.params.id);
+    
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Only the user who made the booking can review it
+    if (booking.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to review this booking" });
+    }
+
+    if (booking.status !== 'completed') {
+      return res.status(400).json({ message: "Can only review completed bookings" });
+    }
+
+    booking.review = {
+      text,
+      rating,
+      createdAt: new Date()
+    };
+
+    await booking.save();
+    res.json({ success: true, booking });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

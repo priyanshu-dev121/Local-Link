@@ -69,6 +69,9 @@ const Navbar = () => {
     window.location.href = "/";
   };
 
+  const [logoPos, setLogoPos] = useState({ x: 0, y: 0 });
+  const [logoHover, setLogoHover] = useState(false);
+
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
@@ -80,13 +83,35 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+        <Link 
+          to="/" 
+          className="flex items-center gap-3 group relative"
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setLogoPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+          }}
+          onMouseEnter={() => setLogoHover(true)}
+          onMouseLeave={() => setLogoHover(false)}
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 relative z-10">
             <MapPin className="w-5 h-5 text-white" />
           </div>
-          <span className="font-display font-bold text-xl tracking-tight text-foreground group-hover:text-primary transition-colors">
-            LocalLink
-          </span>
+          
+          <div className="relative">
+            <span className="font-display font-bold text-xl tracking-tight text-foreground transition-colors relative z-10">
+              LocalLink
+            </span>
+            
+            {/* Spotlight Effect */}
+            <motion.div
+              animate={{ 
+                opacity: logoHover ? 1 : 0,
+                background: `radial-gradient(40px circle at ${logoPos.x}px ${logoPos.y}px, rgba(232,78,27,0.15), transparent)`
+              }}
+              transition={{ type: "tween", ease: "circOut", duration: 0.5 }}
+              className="absolute -inset-x-4 -inset-y-2 pointer-events-none rounded-xl"
+            />
+          </div>
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

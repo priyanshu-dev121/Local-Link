@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Clock, MapPin, Star, ShieldCheck, ArrowLeft, Calendar, Check, Briefcase, User, Info } from "lucide-react";
+import { Clock, MapPin, Star, ShieldCheck, ArrowLeft, Calendar, Check, Briefcase, User, Info, Sparkles } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import API, { BACKEND_URL } from "@/api/api";

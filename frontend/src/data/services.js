@@ -4,7 +4,9 @@ export const categories = [
   { name: "home tutor", icon: "📚", color: "bg-green-100 text-green-700" },
   { name: "cleaning", icon: "🧹", color: "bg-purple-100 text-purple-700" },
   { name: "delivery", icon: "📦", color: "bg-orange-100 text-orange-700" },
-  { name: "painter", icon: "🎨", color: "bg-pink-100 text-pink-700" }
+  { name: "painter", icon: "🎨", color: "bg-pink-100 text-pink-700" },
+  { name: "ac repair", icon: "❄️", color: "bg-cyan-100 text-cyan-700" },
+  { name: "gardening", icon: "🌿", color: "bg-emerald-100 text-emerald-700" },
 ];
 
 export const services = [

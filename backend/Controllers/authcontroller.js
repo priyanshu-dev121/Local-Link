@@ -133,3 +133,59 @@ exports.verifyOtp = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// 👉 FORGOT PASSWORD
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const otp = generateOTP();
+    user.otp = otp;
+    user.otpExpiresAt = new Date(Date.now() + 10 * 60000); // 10 mins
+    await user.save();
+
+    await transporter.sendMail({
+      from: `"LocalLink Support 🛠️" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Password Reset Code",
+      html: `
+        <div style="font-family:Arial,sans-serif;background:#0f172a;padding:40px;border-radius:20px;max-width:480px;margin:auto;">
+          <h2 style="color:#ff6b35;margin-bottom:8px;font-size:24px;">LocalLink</h2>
+          <p style="color:#94a3b8;font-size:14px;margin-bottom:32px;">Password Reset Request</p>
+          <div style="background:#1e293b;border-radius:16px;padding:32px;text-align:center;border:1px solid #334155;">
+            <p style="color:#94a3b8;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;">Reset Code</p>
+            <h1 style="color:#ffffff;font-size:48px;letter-spacing:16px;font-family:monospace;margin:0;">${otp}</h1>
+          </div>
+          <p style="color:#64748b;font-size:12px;margin-top:24px;text-align:center;">Enter this code to reset your password. If you didn't request this, ignore this email.</p>
+        </div>
+      `
+    });
+
+    res.json({ message: "Reset code sent to email" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// 👉 RESET PASSWORD
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.otp !== String(otp)) return res.status(400).json({ message: "Invalid OTP Code" });
+    if (new Date() > new Date(user.otpExpiresAt)) return res.status(400).json({ message: "OTP has expired" });
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.otp = undefined;
+    user.otpExpiresAt = undefined;
+    await user.save();
+
+    res.json({ message: "Password updated successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

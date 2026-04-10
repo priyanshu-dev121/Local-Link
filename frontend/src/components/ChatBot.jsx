@@ -100,7 +100,7 @@ export const ChatBot = () => {
     }
   };
 
-  const handleSend = (textOverride) => {
+  const handleSend = async (textOverride) => {
     const textToSend = textOverride || input;
     if (!textToSend.trim()) return;
     
@@ -117,30 +117,31 @@ export const ChatBot = () => {
     if (!textOverride) setInput('');
     setIsTyping(true);
     
+    // Simulate thinking
     setTimeout(() => {
-      const result = findBestResponse(textToSend);
+      const response = findBestResponse(textToSend);
       
       const botMessage = { 
         id: (Date.now() + 1).toString(), 
-        text: result.text, 
+        text: response.text, 
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date(),
+        action: response.action,
+        target: response.target
       };
       
       setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
-      
+
       if (isAutoVoiceEnabled) {
-        speak(result.text);
+          speak(response.text);
       }
-      
-      if (result.action === 'navigate' && result.target) {
-        setTimeout(() => {
-          setIsOpen(false);
-          navigate(result.target);
-        }, 2200);
+
+      // Handle direct navigation actions
+      if (response.action === 'navigate' && response.target) {
+          setTimeout(() => navigate(response.target), 1500);
       }
-    }, 1300);
+    }, 800);
   };
 
   return (
@@ -175,25 +176,10 @@ export const ChatBot = () => {
                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-[2px] border-[#0a0a0c] rounded-full z-20 shadow-lg"></span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base tracking-tight">LocalLink AI</h3>
-                  <div className="flex items-center gap-2 text-primary">
-                    <span className="text-[9px] uppercase font-bold tracking-widest">Active Intelligence</span>
-                  </div>
+                  <h3 className="font-bold text-white text-base tracking-tight">LocalLink Assistant</h3>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  title="Toggle Auto-Speak"
-                  className={`h-9 w-9 rounded-xl transition-all ${isAutoVoiceEnabled ? 'bg-primary/20 text-primary' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
-                  onClick={() => {
-                    setIsAutoVoiceEnabled(!isAutoVoiceEnabled);
-                    if (isAutoVoiceEnabled) window.speechSynthesis.cancel();
-                  }}
-                >
-                  {isAutoVoiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-                </Button>
                 <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-white hover:bg-white/5 rounded-xl" onClick={clearChat} title="Clear Chat">
                   <RotateCcw className="w-4 h-4" />
                 </Button>
@@ -227,14 +213,6 @@ export const ChatBot = () => {
                         }`}>
                           {msg.text}
                         </div>
-                        
-                        <button
-                          onClick={() => speak(msg.text)}
-                          className={`absolute -right-2 top-0 translate-x-full h-8 w-8 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${msg.sender === 'user' ? 'left-[-40px] right-auto translate-x-0' : ''}`}
-                          title="Speak this message"
-                        >
-                          <Volume2 className="w-3.5 h-3.5 text-gray-400 hover:text-primary transition-colors" />
-                        </button>
                       </div>
                       
                       <span className="text-[10px] text-gray-600 mt-2 font-semibold uppercase tracking-wider px-2">
@@ -278,12 +256,9 @@ export const ChatBot = () => {
                   <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about local services..."
+                    placeholder="Ask something..."
                     className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus-visible:ring-primary/50 h-14 px-6 rounded-2xl transition-all group-hover:bg-white/10 text-base"
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <kbd className="text-[10px] bg-white/10 px-2 py-1 rounded border border-white/10 text-gray-500 font-bold uppercase tracking-tighter">Enter</kbd>
-                  </div>
                 </div>
                 <Button 
                   type="submit" 
@@ -294,12 +269,8 @@ export const ChatBot = () => {
                   <Send className="w-7 h-7" />
                 </Button>
               </form>
-              <div className="flex items-center justify-between mt-4 px-2">
-                <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">LocalLink Pro AI • v2.4</p>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
-                  <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Neural Engine Active</p>
-                </div>
+              <div className="flex items-center justify-center mt-4">
+                <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Online • Ready to help</p>
               </div>
             </div>
           </motion.div>

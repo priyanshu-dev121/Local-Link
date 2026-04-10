@@ -175,16 +175,27 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
                 />
+                {!isSignup && (
+                    <div className="text-right mt-3">
+                        <button onClick={() => navigate("/forgot-password")} className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Forgot Password?</button>
+                    </div>
+                )}
                 {isSignup && (
-                  <div className="mt-3 flex gap-3 px-2">
-                    <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${password.length >= 8 ? 'text-emerald-500' : 'text-slate-500 opacity-50'}`}>
-                      <div className={`w-1 h-1 rounded-full ${password.length >= 8 ? 'bg-emerald-500' : 'bg-slate-500'}`} /> 8+ Chars
-                    </div>
-                    <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${/\d/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-50'}`}>
-                      <div className={`w-1 h-1 rounded-full ${/\d/.test(password) ? 'bg-emerald-500' : 'bg-slate-500'}`} /> 1 Number
-                    </div>
-                    <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${/[A-Z]/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-50'}`}>
-                      <div className={`w-1 h-1 rounded-full ${/[A-Z]/.test(password) ? 'bg-emerald-500' : 'bg-slate-500'}`} /> 1 Upper
+                  <div className="mt-4 p-4 rounded-2xl bg-black/20 border border-white/5 space-y-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Password Requirements</p>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-all ${password.length >= 8 ? 'text-emerald-500' : 'text-slate-500 opacity-40'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${password.length >= 8 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-slate-500'}`} /> 8+ Characters
+                        </div>
+                        <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-all ${/\d/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-40'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${/\d/.test(password) ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-slate-500'}`} /> 1 Number
+                        </div>
+                        <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-all ${/[A-Z]/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-40'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${/[A-Z]/.test(password) ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-slate-500'}`} /> 1 Uppercase
+                        </div>
+                        <div className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-all ${/[!@#$%^&*]/.test(password) ? 'text-emerald-500' : 'text-slate-500 opacity-40'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${/[!@#$%^&*]/.test(password) ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-slate-500'}`} /> 1 Special
+                        </div>
                     </div>
                   </div>
                 )}

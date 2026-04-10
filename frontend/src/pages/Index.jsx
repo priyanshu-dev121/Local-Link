@@ -27,10 +27,27 @@ const Index = () => {
     navigate(`/services?query=${encodeURIComponent(searchQuery)}&location=${encodeURIComponent(locationQuery)}`);
   };
 
+  const detectLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+          const data = await response.json();
+          const city = data.address.city || data.address.town || data.address.village || "My Location";
+          setLocationQuery(city);
+        } catch (err) {
+          setLocationQuery(`${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+        }
+      });
+    }
+  };
+
   return (
     <Layout>
       {/* Hero */}
       <section 
+        id="hero-search"
         onMouseMove={handleMouseMove}
         className="relative min-h-[90vh] bg-slate-950 flex items-center overflow-hidden"
       >
@@ -72,48 +89,53 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="mt-12 flex flex-col sm:flex-row gap-4 p-2 bg-white/5 backdrop-blur-2xl rounded-[2rem] border border-white/10 shadow-3xl max-w-2xl"
+              className="mt-12 flex flex-col sm:flex-row gap-4 p-2 bg-white/5 backdrop-blur-2xl rounded-[2rem] border border-white/10 shadow-3xl max-w-4xl"
             >
-              <div className="flex-1 relative">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+              <div className="flex-[2] relative">
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
                 <input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   placeholder="What service do you need?"
-                  className="w-full pl-14 pr-4 py-5 rounded-2xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                  className="w-full pl-16 pr-4 py-5 rounded-2xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all font-bold text-lg"
                 />
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 w-full">
+              <div className="flex flex-col sm:flex-row gap-3 flex-[1.5]">
                 <div className="relative flex-1">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <MapPin 
+                    onClick={detectLocation}
+                    className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 cursor-pointer hover:text-primary transition-colors" 
+                  />
                   <input
                     value={locationQuery}
                     onChange={(e) => setLocationQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     placeholder="Location"
-                    className="w-full pl-10 pr-3 py-5 rounded-2xl bg-white/5 text-white placeholder:text-slate-500 border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                    className="w-full pl-14 pr-4 py-5 rounded-2xl bg-white/5 text-white placeholder:text-slate-500 border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all font-bold text-lg"
                   />
                 </div>
                 <Button 
                   onClick={handleSearch} 
                   size="lg" 
-                  className="h-full px-8 rounded-2xl bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/40 hover:shadow-primary/60"
+                  className="h-full px-10 rounded-2xl bg-primary text-white font-black uppercase tracking-[0.15em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/40 hover:shadow-primary/60"
                 >
                   Search
                 </Button>
               </div>
             </motion.div>
 
-            <div className="mt-12 flex flex-wrap items-center gap-4 sm:gap-8">
+            <div className="mt-12 flex flex-wrap items-center gap-6 sm:gap-12">
               {[
                 { label: "10K+ Providers", icon: Users },
                 { label: "4.8 Avg Rating", icon: Star },
                 { label: "Vetted Pros", icon: Shield },
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm font-bold text-slate-400 group cursor-default">
-                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <item.icon className="w-4 h-4 group-hover:text-primary transition-colors" />
+                <div key={i} className="flex items-center gap-3 text-sm font-bold text-slate-400 group cursor-default">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/20 transition-all duration-300 shadow-lg">
+                    <item.icon className="w-5 h-5 group-hover:text-primary transition-colors" />
                   </div>
-                  {item.label}
+                  <span className="tracking-tight group-hover:text-white transition-colors">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -122,7 +144,7 @@ const Index = () => {
       </section>
 
       {/* Redesigned Categories (Even Sexier) */}
-      <section className="py-32 relative bg-slate-950 overflow-hidden">
+      <section id="expertise-section" className="py-32 relative bg-slate-950 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -195,8 +217,8 @@ const Index = () => {
                     viewport={{ once: true }}
                     className="flex gap-6 group"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 group-hover:border-primary/50 group-hover:text-primary transition-all duration-300">
-                      <feature.icon className="w-7 h-7" />
+                    <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 group-hover:bg-primary/20 group-hover:border-primary/50 group-hover:text-primary transition-all duration-300 shadow-xl">
+                      <feature.icon className="w-7 h-7 text-primary" />
                     </div>
                     <div>
                       <h4 className="font-black text-xl text-white group-hover:text-primary transition-colors tracking-tight">{feature.title}</h4>
@@ -346,9 +368,9 @@ const Index = () => {
             <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 -translate-y-1/2 rounded-full" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
               {[
-                { step: "01", title: "Discover Services", desc: "Browse local pros. Filter by category, location, or price.", icon: Search, color: "from-blue-500 to-cyan-400" },
-                { step: "02", title: "Book & Schedule", desc: "Select time and use our mock payment portal.", icon: CalendarCheck, color: "from-purple-500 to-pink-400" },
-                { step: "03", title: "Service Delivered", desc: "Get high-quality service right to your doorstep.", icon: CheckCircle, color: "from-green-500 to-emerald-400" },
+                { step: "01", title: "Discover Services", desc: "Browse local pros. Filter by category, location, or price.", icon: Search, color: "from-blue-500 to-cyan-400", target: "hero-search" },
+                { step: "02", title: "Book & Schedule", desc: "Select time and use our mock payment portal.", icon: CalendarCheck, color: "from-purple-500 to-pink-400", target: "expertise-section" },
+                { step: "03", title: "Service Delivered", desc: "Get high-quality service right to your doorstep.", icon: CheckCircle, color: "from-green-500 to-emerald-400", target: "testimonials-section" },
               ].map((item, i) => (
                 <motion.div
                   key={item.step}
@@ -356,15 +378,19 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ delay: i * 0.2, type: "spring", stiffness: 100 }}
-                  className="text-center relative group"
+                  onClick={() => {
+                    const el = document.getElementById(item.target);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="text-center relative group cursor-pointer"
                 >
-                  <div className="w-24 h-24 rounded-full bg-background shadow-2xl border-4 border-background mx-auto mb-6 flex items-center justify-center relative cursor-pointer group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-500 ease-out z-20">
+                  <div className="w-24 h-24 rounded-full bg-background shadow-2xl border-4 border-background mx-auto mb-6 flex items-center justify-center relative group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-500 ease-out z-20">
                     <div className={`absolute inset-0 bg-gradient-to-tr ${item.color} rounded-full opacity-20 blur-md group-hover:opacity-60 transition-opacity duration-500`} />
                     <item.icon className="w-10 h-10 text-foreground relative z-10 group-hover:text-primary transition-colors" />
                     <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-xs shadow-lg">{item.step}</div>
                   </div>
-                  <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 shadow-xl group-hover:shadow-primary/5 transition-all duration-500 translate-y-0 group-hover:-translate-y-2 relative z-10">
-                    <h3 className="text-xl font-display font-extrabold text-card-foreground">{item.title}</h3>
+                  <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 shadow-xl group-hover:shadow-primary/20 transition-all duration-500 translate-y-0 group-hover:-translate-y-2 relative z-10">
+                    <h3 className="text-xl font-display font-extrabold text-card-foreground group-hover:text-primary transition-colors">{item.title}</h3>
                     <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                   </div>
                 </motion.div>
@@ -375,7 +401,7 @@ const Index = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 relative bg-slate-900 overflow-hidden">
+      <section id="testimonials-section" className="py-24 relative bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none mix-blend-overlay" />
         <div className="absolute -right-64 -top-64 w-[500px] h-[500px] bg-accent/20 rounded-full blur-[100px] -z-0" />
         <div className="absolute -left-64 -bottom-64 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] -z-0" />

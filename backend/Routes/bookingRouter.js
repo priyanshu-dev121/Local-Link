@@ -4,11 +4,13 @@ const protect = require('../Middleware/authmiddleware');
 const {
   createBooking,
   getBookings,
-  updateBookingStatus
+  updateBookingStatus,
+  submitReview
 } = require('../Controllers/bookingcontroller');
 
 router.post('/',protect, createBooking);
 router.get('/',protect,getBookings);
 router.put('/:id/status', protect, updateBookingStatus);
+router.put('/:id/review', protect, submitReview);
 
 module.exports = router;

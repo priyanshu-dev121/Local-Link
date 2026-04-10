@@ -16,7 +16,7 @@ export default function VerifyOTP() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSpamWarning(true);
-    }, 30000); // 30 seconds
+    }, 5000); // 5 seconds
     return () => clearTimeout(timer);
   }, []);
 

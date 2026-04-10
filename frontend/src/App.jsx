@@ -9,6 +9,7 @@ import Services from "./pages/Services";
 // import ProviderProfile from "./pages/ProviderProfile";
 import Booking from "./pages/Booking";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOTP from "./pages/VerifyOTP";
 import Dashboard from "./pages/Dashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
@@ -20,30 +21,29 @@ import BlogPost from "./pages/BlogPost";
 import Terms from "./pages/Terms";
 import AboutUs from "./pages/AboutUs";
 // import Press from "./pages/Press";
+import { SocketProvider } from "./context/SocketContext";
 import { ChatBot } from "./components/ChatBot";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-{/* <TooltipProvider> */}
-{/* <Toaster /> */}
-{/* <Sonner /> */}
+    <SocketProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
           <Route path="/service/:id" element={<ServiceDetails />} />
-{/* <Route path="/centers" element={<Centers />} /> */}
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/about" element={<AboutUs />} />
-{/* <Route path="/press" element={<Press />} /> */}
-{/* <Route path="/provider/:id" element={<ProviderProfile />} /> */}
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/booking/:serviceId" element={<Booking />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
@@ -51,7 +51,7 @@ const App = () => (
         </Routes>
         <ChatBot />
       </BrowserRouter>
-{/* </TooltipProvider> */}
+    </SocketProvider>
   </QueryClientProvider>
 );
 
