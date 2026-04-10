@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, MapPin, Bell, User, ChevronDown, LogOut, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
   const [userDropdown, setUserDropdown] = useState(false);
   const [notifDropdown, setNotifDropdown] = useState(false);
@@ -181,22 +182,31 @@ const Navbar = () => {
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, scale: 0.9, height: 0 }}
-                              className="relative text-left px-3 py-3 rounded-xl hover:bg-muted/50 transition-colors cursor-default select-none border border-transparent hover:border-primary/10 group overflow-hidden"
+                              className="relative text-left px-3 py-3 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer select-none border border-transparent hover:border-primary/10 group overflow-hidden"
+                              onClick={() => {
+                                navigate(user?.role === 'provider' ? "/provider-dashboard" : "/dashboard");
+                                setNotifDropdown(false);
+                              }}
                             >
                               <button 
                                 onClick={(e) => { e.stopPropagation(); setHiddenNotifs([...hiddenNotifs, b._id]); }}
-                                className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive bg-background/80 rounded-full p-1 shadow backdrop-blur"
+                                className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive bg-background/80 rounded-full p-1 shadow backdrop-blur z-10"
                               >
                                 <X className="w-3 h-3" />
                               </button>
                               <p className="text-xs font-semibold text-foreground mb-1 pr-6">
-                                Update: <span className="text-primary">{b.service?.title}</span>
+                                {user?.role === 'provider' ? 'New Request:' : 'Update:'} <span className="text-primary">{b.service?.title}</span>
                               </p>
                               <p className="text-[10px] text-muted-foreground leading-snug mb-1.5">
-                                {b.status === "pending" && "Your request is sent and awaiting confirmation."}
-                                {b.status === "accepted" && "Great! Your booking is accepted."}
-                                {b.status === "completed" && "Service completed successfully!"}
-                                {b.status === "rejected" && "Your request was declined."}
+                                {user?.role === 'provider' ? (
+                                    b.status === "pending" ? `Customer ${b.user?.name} requested your service.` : 
+                                    b.status === "accepted" ? "You accepted this job." : "Update on booking status."
+                                ) : (
+                                    b.status === "pending" && "Your request is sent and awaiting confirmation." ||
+                                    b.status === "accepted" && "Great! Your booking is accepted." ||
+                                    b.status === "completed" && "Service completed successfully!" ||
+                                    b.status === "rejected" && "Your request was declined."
+                                )}
                               </p>
                               <p className="text-[9px] text-muted-foreground/60 font-medium">
                                 {format(new Date(b.date), "MMM dd, hh:mm a")}

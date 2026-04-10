@@ -26,7 +26,8 @@ const ProviderDashboard = () => {
     category: "cleaning",
     price: "",
     description: "",
-    image: ""
+    image: "",
+    location: { lat: null, lng: null }
   });
 
   // Profile State
@@ -115,18 +116,42 @@ const ProviderDashboard = () => {
       toast.error("Please upload a showcase image of your work");
       return;
     }
+    if (!newService.location.lat) {
+        toast.error("Please add your business location so clients can find you nearby!");
+        return;
+    }
     try {
       await API.post("/services", {
         ...newService,
-        price: Number(newService.price)
+        price: Number(newService.price),
+        location: {
+            type: "Point",
+            coordinates: [newService.location.lng, newService.location.lat]
+        }
       });
       toast.success("Service posted successfully!");
       setShowAddModal(false);
-      setNewService({ title: "", category: "cleaning", price: "", description: "", image: "" });
+      setNewService({ title: "", category: "cleaning", price: "", description: "", image: "", location: { lat: null, lng: null } });
       fetchData();
     } catch (error) {
       toast.error("Error posting service");
     }
+  };
+
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+       toast.error("Geolocation not supported by your browser");
+       return;
+    }
+    navigator.geolocation.getCurrentPosition((pos) => {
+       setNewService({
+           ...newService,
+           location: { lat: pos.coords.latitude, lng: pos.coords.longitude }
+       });
+       toast.success("Business location captured!");
+    }, () => {
+       toast.error("Unable to retrieve location");
+    });
   };
 
   const handleDeleteService = async (id) => {

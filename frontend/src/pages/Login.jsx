@@ -166,15 +166,17 @@ const Login = () => {
                 />
               </div>
 
-              <div className="relative group">
-                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
-                <input
-                  type="password"
-                  placeholder="Secret Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
-                />
+              <div>
+                <div className="relative group">
+                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
+                  <input
+                    type="password"
+                    placeholder="Secret Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white/5 border border-white/5 text-white font-bold focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600"
+                  />
+                </div>
                 {!isSignup && (
                     <div className="text-right mt-3">
                         <button onClick={() => navigate("/forgot-password")} className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Forgot Password?</button>

@@ -14,19 +14,42 @@ const Services = () => {
   const [locationSearch, setLocationSearch] = useState(searchParams.get("location") || "");
   const [activeCategory, setActiveCategory] = useState("All");
   const [services, setServices] = useState([]);
+  const [userCoords, setUserCoords] = useState(null);
+  const [isDetecting, setIsDetecting] = useState(false);
+
+  const fetchServices = async (coords = null) => {
+    try {
+      let url = "/services";
+      if (coords) {
+        url += `?lat=${coords.lat}&lng=${coords.lng}&radius=30000`;
+      }
+      const res = await API.get(url);
+      setServices(res.data);
+    } catch (error) {
+      console.log("Error fetching services:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await API.get("/services");
-        setServices(res.data);
-        console.log("Backend services:", res.data);
-      } catch (error) {
-        console.log("Error fetching services:", error);
-      }
-    };
-    fetchServices();
-  }, []);
+    fetchServices(userCoords);
+  }, [userCoords]);
+
+  const detectLocation = () => {
+    setIsDetecting(true);
+    if (!navigator.geolocation) {
+       console.error("Geolocation not supported");
+       setIsDetecting(false);
+       return;
+    }
+    navigator.geolocation.getCurrentPosition((pos) => {
+       const newCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+       setUserCoords(newCoords);
+       setLocationSearch("Current Location");
+       setIsDetecting(false);
+    }, () => {
+       setIsDetecting(false);
+    });
+  };
 
   const categories = [
     "All",
@@ -51,6 +74,7 @@ const Services = () => {
 
       const matchLoc =
         locationSearch === "" ||
+        locationSearch === "Current Location" || // If current location selected, backend already filtered by 30km
         s.title?.toLowerCase().includes(locationSearch.toLowerCase()) ||
         s.description?.toLowerCase().includes(locationSearch.toLowerCase());
 
@@ -93,13 +117,23 @@ const Services = () => {
                 />
               </div>
               <div className="relative">
-                <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
                 <input
                   value={locationSearch}
-                  onChange={(e) => setLocationSearch(e.target.value)}
+                  onChange={(e) => {
+                      setLocationSearch(e.target.value);
+                      if (e.target.value === "") setUserCoords(null);
+                  }}
                   placeholder="Location"
-                  className="w-full md:w-56 pl-14 pr-6 py-6 rounded-[2rem] bg-white/5 text-white placeholder:text-slate-500 font-bold border border-white/5 focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all"
+                  className="w-full md:w-56 pl-14 pr-16 py-6 rounded-[2rem] bg-white/5 text-white placeholder:text-slate-500 font-bold border border-white/5 focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all"
                 />
+                <button 
+                  onClick={detectLocation}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-primary/20 transition-all"
+                  title="Detect my location"
+                >
+                  <MapPin className={`w-5 h-5 ${isDetecting ? 'animate-pulse text-primary' : 'text-slate-400'}`} />
+                </button>
               </div>
             </div>
 

@@ -6,7 +6,22 @@ const protect = require('../Middleware/authmiddleware');
 
 router.get('/', async (req, res) => {
   try {
-    const services = await Service.find().populate('provider', 'name businessName');
+    const { lat, lng, radius } = req.query;
+    let query = {};
+
+    if (lat && lng) {
+      query.location = {
+        $near: {
+          $geometry: { 
+            type: "Point", 
+            coordinates: [parseFloat(lng), parseFloat(lat)] 
+          },
+          $maxDistance: parseInt(radius) || 30000 // default 30km
+        }
+      };
+    }
+
+    const services = await Service.find(query).populate('provider', 'name businessName');
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });

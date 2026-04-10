@@ -1,8 +1,30 @@
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { 
+  Package, 
+  Clock, 
+  Calendar, 
+  DollarSign, 
+  User, 
+  Settings, 
+  LogOut, 
+  ChevronRight, 
+  Star, 
+  Bell, 
+  MapPin,
+  CheckCircle,
+  X
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Layout from "@/components/Layout";
 import ReviewModal from "@/components/ReviewModal";
+import API from "@/api/api";
+import { toast } from "sonner";
+import { useSocket } from "@/context/SocketContext";
 import { format } from "date-fns";
 
 const Dashboard = () => {
-
   const navigate = useNavigate();
   const socket = useSocket();
 
@@ -12,7 +34,6 @@ const Dashboard = () => {
 
   const tabs = ["My Bookings", "Profile", "Notifications"];
   const [bookings, setBookings] = useState([]);
-  const [clearedNotifs, setClearedNotifs] = useState([]);
 
   const fetchBookings = async () => {
     try {

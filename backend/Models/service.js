@@ -28,11 +28,14 @@ const serviceSchema = new mongoose.Schema({
   },
 
   price: Number,
-
   description: String,
-
-  image: String   // ⭐ ADD THIS LINE
-
+  image: String,
+  location: {
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], default: [0, 0] } // [longitude, latitude]
+  }
 }, { timestamps: true });
+
+serviceSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Service", serviceSchema);
