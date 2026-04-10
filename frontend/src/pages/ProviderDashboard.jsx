@@ -40,23 +40,32 @@ const ProviderDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [bookingsRes, servicesRes, userRes] = await Promise.all([
-        API.get("/bookings"),
-        API.get("/services/my-services"),
-        API.get("/users/me")
-      ]);
-      setBookings(bookingsRes.data);
-      setMyServices(servicesRes.data);
-      if (userRes.data) {
-        setProfileData({
-          businessName: userRes.data.businessName || "",
-          experience: userRes.data.experience || "",
-          bio: userRes.data.bio || "",
-          image: userRes.data.image || ""
-        });
-      }
+      // Fetch bookings
+       API.get("/bookings")
+        .then(res => setBookings(res.data))
+        .catch(err => console.error("Bookings fetch error:", err));
+
+      // Fetch services
+       API.get("/services/my-services")
+        .then(res => setMyServices(res.data))
+        .catch(err => console.error("Services fetch error:", err));
+
+      // Fetch profile
+       API.get("/users/me")
+        .then(res => {
+            if (res.data) {
+                setProfileData({
+                  businessName: res.data.businessName || "",
+                  experience: res.data.experience || "",
+                  bio: res.data.bio || "",
+                  image: res.data.image || ""
+                });
+            }
+        })
+        .catch(err => console.error("Profile fetch error:", err));
+
     } catch (error) {
-      console.error("Error fetching dashboard data", error);
+      console.error("Dashboard Load Error:", error);
     }
   };
 
@@ -206,6 +215,9 @@ const ProviderDashboard = () => {
               <p className="mt-3 text-slate-400 font-bold uppercase tracking-widest text-xs">Business Profile • {user.name}</p>
             </div>
             <div className="flex gap-4">
+               <Button onClick={fetchData} variant="outline" className="rounded-full bg-white/5 border-white/10 hover:bg-white/10">
+                  <Clock className="w-4 h-4 mr-2" /> Refresh
+               </Button>
                {(['bookings', 'services', 'profile']).map(tab => (
                  <button 
                   key={tab}

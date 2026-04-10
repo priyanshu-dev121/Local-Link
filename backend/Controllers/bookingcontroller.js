@@ -94,11 +94,12 @@ exports.getBookings = async (req, res) => {
     if (req.user.role === 'provider') {
       // Find services this provider owns
       const myServices = await Service.find({ provider: req.user._id }).select('_id');
+      const serviceIds = myServices.map(s => s._id);
       
       // Get bookings for their services (Received) OR bookings they made (Sent)
       bookings = await Booking.find({ 
         $or: [
-          { service: { $in: myServices } },
+          { service: { $in: serviceIds } },
           { user: req.user._id }
         ]
       })
